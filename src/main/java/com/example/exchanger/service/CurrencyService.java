@@ -40,9 +40,9 @@ public class CurrencyService {
             }
             assert courseList != null;
             for (CourseBase course: courseList){
-               BigDecimal currencySale = course.getRate().multiply(new BigDecimal("0.5"));
-               BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal(2));
-            Currency currency = new Currency(course.getCc(), currencyPurchase, currencySale);
+               BigDecimal currencySale = course.getRate().multiply(new BigDecimal("0.95"));
+               BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal("1.05"));
+            Currency currency = new Currency(course.getCc(), currencyPurchase, currencySale, course.getExchangedate());
             currencyRepository.save(currency);
         }
         return currencyRepository.findAll();

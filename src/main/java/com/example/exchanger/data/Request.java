@@ -16,15 +16,16 @@ import java.math.BigDecimal;
 public class Request {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NonNull
     private String cc;
-    @NonNull
     private String action;
-    @NonNull
     private BigDecimal sumCurrency;
     @NonNull
     private String phoneNumber;
     private boolean statusNew;
+    @NonNull
     private int confirmationCode;
+    @NonNull
     private BigDecimal sumPayment;
+
+
 }

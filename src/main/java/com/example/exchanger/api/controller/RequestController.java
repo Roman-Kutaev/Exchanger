@@ -31,9 +31,10 @@ public class RequestController {
         return requestService.findAllRequest();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> index(@RequestBody Request request) {
-        System.out.println("requestService.findRequest(request = " + requestService.findRequest(request));
-        return requestService.findRequest(request);
+    @GetMapping(path = "/{code}")
+    public ResponseEntity<Request> requestByCode(@PathVariable int code) {
+        System.out.println("code = " + code);
+        return requestService.findRequestByCode(code);
+
     }
 }

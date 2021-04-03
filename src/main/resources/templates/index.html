@@ -8,11 +8,12 @@
     <title>Title</title>
 </head>
 <style>
-      th, td{
+    th, td {
         width: 150px;
         border: 1px solid darkgreen;
         text-align: center;
     }
+
     table, div {
         width: 900px;
         text-align: center;
@@ -36,7 +37,7 @@
     <label for="phoneNumber"></label><input id="phoneNumber" name="phone" required="required">
     <button id="calculate">Подать заявку</button>
 </div>
-<div id="requestSave"></div>
+<div name="rs" id="requestSave"></div>
 <br>
 <hr>
 <table>
@@ -80,7 +81,7 @@
         currencyArr.forEach(currency => {
             let tr = document.createElement('tr');
             for (const prop in currency) {
-                if(prop !== 'id') {
+                if (prop !== 'id') {
                     let td = document.createElement('td');
                     td.append(document.createTextNode(currency[prop]));
                     tr.append(td);
@@ -126,7 +127,7 @@
             let ccValue = document.querySelector('#buyCc');
             let actionValue = document.querySelector('#act');
             let sumValue = document.querySelector('#sumBuy');
-            let phoneNumberValue = document.querySelector('#phoneNumber')
+            let phoneNumberValue = document.querySelector('#phoneNumber');
             const request = {
                 cc: ccValue.value,
                 action: actionValue.value,
@@ -147,19 +148,20 @@
 
     const baseUrl = "http://localhost:8080/api/v1/exchanger";
     const baseUrlRequest = "http://localhost:8080/api/v1/exchanger/request";
+
     fetch(baseUrl)
         .then(response => response.json())
-        .then(json =>{
+        .then(json => {
             displayRates(json);
         });
 
-  function f() {
-      fetch(baseUrlRequest)
-          .then(response => response.json())
-          .then(json =>{
-              displayRequest(json);
-          });
-  }
+    function f() {
+        fetch(baseUrlRequest)
+            .then(response => response.json())
+            .then(json => {
+                displayRequest(json);
+            });
+    }
 
 
     function displayRequest(request) {
@@ -169,46 +171,44 @@
         request.forEach(req => {
             let div = document.createElement('div');
             for (const prop in req) {
-                if(prop === 'sumPayment') {
+                if (prop === 'sumPayment') {
                     let p = document.createElement('p');
                     p.append(document.createTextNode("Сумма к оплате " + req[prop] + " грн."));
+                    div.append(p);
+                }else if (prop === 'phoneNumber'){
+                    let p = document.createElement('p');
+                    p.append(document.createTextNode("СМС отправлено на номер " + req[prop]));
                     div.append(p);
                 }
             }
 
-            let label = document.createElement('label')
-            label.append(document.createTextNode('Код: '))
+            let label = document.createElement('label');
+            label.append(document.createTextNode('Код: '));
             let input = document.createElement('input');
-            input.append(document.createTextNode("Code "))
-            div.append(label, input);
-            div.append(addButtonSaveRequest(req.confirmationCode));
+            let buttonElement = document.createElement("button");
+            buttonElement.className = "save";
+            buttonElement.setAttribute("saveRequest", req.confirmationCode);
+            const text = document.createTextNode("Подтвердить заявку");
+            buttonElement.append(text);
+            div.append(label, input, buttonElement);
             form.append(div);
         });
     }
 
-    function addButtonSaveRequest(code) {
-        let buttonElement = document.createElement("button");
-        buttonElement.className = "save";
-        buttonElement.setAttribute("saveRequest", code);
-        const text = document.createTextNode("Подтвердить заявку");
-        buttonElement.append(text);
-        return buttonElement;
-    }
-
     $('div').on('click', '.save', function () {
-        let code = $(this).attr("saveRequest");
-             const request = {
-            confirmationCode: code
-        };
-        fetch(baseUrlRequest, {
-            method: 'POST',
+        const form = document.querySelector('#requestSave');
+        let code = form.getElementsByTagName('input').item(0).value
+        console.log(code)
+        fetch(baseUrlRequest + "/" + code, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(request)
-
+            }
+        }).then(response => {
+            form.innerHTML=''
+            return response.json();
         })
-            });
+    });
 
 </script>
 </body>
