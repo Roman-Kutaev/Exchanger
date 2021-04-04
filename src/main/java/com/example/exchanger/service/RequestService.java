@@ -4,15 +4,12 @@ import com.example.exchanger.data.Currency;
 import com.example.exchanger.data.Request;
 import com.example.exchanger.repository.CurrencyRepository;
 import com.example.exchanger.repository.RequestRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -23,40 +20,44 @@ import java.util.Random;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final CurrencyRepository currencyRepository;
-    //    private final RestTemplate restTemplate;
-//    private final ObjectMapper objectMapper;
-    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
-    public static final String AUTH_TOKEN = "9a8c052ef0edb06a4dd9ef7cd8345f6f";
-    public static final String TWILIO_NUMBER = "+13343846722";
+//    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
+//    public static final String AUTH_TOKEN = "a61ced920a56505df18b276e193cddfc";
+//    public static final String TWILIO_NUMBER = "+13343846722";
+    public static final String STATUS_NEW = "Новая";
+    public static final String STATUS_COMPLETED = "Выполнена";
+    public static final String STATUS_CANCELED = "Отменена";
+    public static final String ACTION_PURCHASE = "Продажа";
+    public static final String ACTION_SALE = "Покупка";
+    public static final Integer RANDOM_RANGE = 100;
 
     public RequestService(RequestRepository requestRepository, CurrencyRepository currencyRepository) {
         this.requestRepository = requestRepository;
         this.currencyRepository = currencyRepository;
-//        restTemplate = new RestTemplate();
-//        objectMapper = new ObjectMapper();
     }
 
     public List<Request> findAllRequest() {
         return requestRepository.findAll();
     }
 
-    public ResponseEntity<?> save(Request request) {
+    public ResponseEntity<?> saveRequest(Request request) {
         try {
             Random random = new Random();
-            int code = random.nextInt(100) + 100;
+            int code = random.nextInt(RANDOM_RANGE) + RANDOM_RANGE;
 
-            request.setStatusNew(true);
+            request.setStatus(STATUS_NEW);
             request.setConfirmationCode(code);
 
             Currency currency = currencyRepository.findCourseByCc(request.getCc());
             BigDecimal sumPayment;
-            if (request.getAction().equals("Продажа")) {
+            if (request.getAction().equals(ACTION_PURCHASE)) {
                 sumPayment = currency.getPurchase().multiply(request.getSumCurrency());
                 request.setSumPayment(sumPayment);
-            } else if (request.getAction().equals("Покупка")) {
+            } else if (request.getAction().equals(ACTION_SALE)) {
                 sumPayment = currency.getSale().multiply(request.getSumCurrency());
                 request.setSumPayment(sumPayment);
-            } else request.setSumPayment(null);
+            } else {
+                request.setSumPayment(null);
+            }
 
             requestRepository.save(request);
             System.out.println("request = " + request);
@@ -76,25 +77,29 @@ public class RequestService {
         }
     }
 
-    public ResponseEntity<?> findRequest(Request request) {
-        request.setStatusNew(false);
-        System.out.println("requestRepository.findRequestByCode(request.getConfirmationCode() = " + requestRepository.findByConfirmationCode(request.getConfirmationCode()));
-        return ResponseEntity.ok(requestRepository.findByConfirmationCode(request.getConfirmationCode()));
-    }
-
     public ResponseEntity<Request> findRequestByCode(int code) {
         Request request = requestRepository.findByConfirmationCode(code);
         if (request != null) {
-            request.setStatusNew(false);
+            request.setStatus(STATUS_COMPLETED);
             requestRepository.save(request);
             System.out.println("Service request = " + request);
             return ResponseEntity.ok(request);
         } else {
-
-//          return ResponseEntity.badRequest().body(null);
             System.out.println("ResponseEntity.notFound().build() " + ResponseEntity.notFound().build());
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public ResponseEntity<Request> findRequestByPhone(String phone){
+        Request request = requestRepository.findByPhoneNumber(phone);
+        if (request.getStatus().equals(STATUS_NEW)){
+            requestRepository.delete(request);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+    public ResponseEntity<Request> findByPhoneNumberAndAction(String phone, String action){
+        Request request = requestRepository.findByPhoneNumberAndAction(phone, action);
+        return ResponseEntity.ok(request);
     }
 
 }

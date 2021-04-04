@@ -21,7 +21,7 @@ public class Request {
     private BigDecimal sumCurrency;
     @NonNull
     private String phoneNumber;
-    private boolean statusNew;
+    private String status;
     @NonNull
     private int confirmationCode;
     @NonNull

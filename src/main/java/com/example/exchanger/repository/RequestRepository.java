@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RequestRepository extends JpaRepository<Request, Integer> {
     Request findByConfirmationCode(int code);
+    Request findByPhoneNumber (String phoneNumber);
+    Request findByPhoneNumberAndAction(String phone, String phoneNumber);
 }

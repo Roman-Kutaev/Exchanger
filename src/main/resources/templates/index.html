@@ -52,27 +52,9 @@
     </tbody>
 </table>
 <script>
-    // document.querySelector("#calculation")
-    //     .addEventListener('click', event => {
-    //         let mame = document.querySelector('#act');
-    //         let cc = document.querySelector('#сс');
-    //         let sum = document.querySelector('#sum');
-    //         const request = {
-    //             name: mame.value,
-    //             cc: cc.value,
-    //             sum: sum.value
-    //         };
-    //         fetch(baseUrlRequest, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(request)
-    //         }).then(response => {
-    //             cc.value = mame.value = sum.value = '';
-    //             return response.json();
-    //         })
-    //     });
+
+    const baseUrl = "http://localhost:8080/api/v1/exchanger";
+    const baseUrlRequest = "http://localhost:8080/api/v1/exchanger/request";
 
     function displayRates(currencyArr) {
         console.log(currencyArr);
@@ -143,11 +125,8 @@
             }).then(response => {
                 ccValue.value = sumValue.value = phoneNumberValue.value = '';
                 return response.json();
-            }).then(f);
+            }).then(showRequest);
         });
-
-    const baseUrl = "http://localhost:8080/api/v1/exchanger";
-    const baseUrlRequest = "http://localhost:8080/api/v1/exchanger/request";
 
     fetch(baseUrl)
         .then(response => response.json())
@@ -155,7 +134,7 @@
             displayRates(json);
         });
 
-    function f() {
+    function showRequest() {
         fetch(baseUrlRequest)
             .then(response => response.json())
             .then(json => {
@@ -163,8 +142,8 @@
             });
     }
 
-
     function displayRequest(request) {
+
         console.log(request);
         const form = document.querySelector('#requestSave');
         form.innerHTML = '';
@@ -187,7 +166,6 @@
             let input = document.createElement('input');
             let buttonElement = document.createElement("button");
             buttonElement.className = "save";
-            buttonElement.setAttribute("saveRequest", req.confirmationCode);
             const text = document.createTextNode("Подтвердить заявку");
             buttonElement.append(text);
             div.append(label, input, buttonElement);
