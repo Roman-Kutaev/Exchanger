@@ -46,6 +46,7 @@
         <td>Валюта</td>
         <td>Курс покупки</td>
         <td>Курс продажи</td>
+        <td>Дата</td>
     </tr>
     </thead>
     <tbody id="body">
@@ -143,7 +144,6 @@
     }
 
     function displayRequest(request) {
-
         console.log(request);
         const form = document.querySelector('#requestSave');
         form.innerHTML = '';
@@ -160,7 +160,6 @@
                     div.append(p);
                 }
             }
-
             let label = document.createElement('label');
             label.append(document.createTextNode('Код: '));
             let input = document.createElement('input');
