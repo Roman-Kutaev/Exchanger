@@ -34,6 +34,7 @@ public class RequestController {
         System.out.println("code = " + code);
         return requestService.findRequestByCode(code);
     }
+
     @GetMapping(path = "/{phoneNumber/action}")
     public ResponseEntity<Request> findRequestByCode(@PathVariable String phoneNumber,String action) {
         System.out.println("phoneNumber = " + phoneNumber);
@@ -42,7 +43,7 @@ public class RequestController {
     }
 
     @DeleteMapping(path = "/{phone}")
-    public ResponseEntity<Request> findRequestByPhone(@PathVariable String phone){
-        return requestService.findRequestByPhone(phone);
+    public ResponseEntity<Request> deleteRequest(@PathVariable String phone){
+        return requestService.deleteRequest(phone);
     }
 }

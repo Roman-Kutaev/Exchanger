@@ -60,7 +60,7 @@ public class RequestService {
             }
 
             requestRepository.save(request);
-            System.out.println("request = " + request);
+            System.out.println("Save request = " + request);
 
             System.out.println("Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());
@@ -90,13 +90,14 @@ public class RequestService {
         }
     }
 
-    public ResponseEntity<Request> findRequestByPhone(String phone){
+    public ResponseEntity<Request> deleteRequest(String phone){
         Request request = requestRepository.findByPhoneNumber(phone);
         if (request.getStatus().equals(STATUS_NEW)){
             requestRepository.delete(request);
         }
         return ResponseEntity.badRequest().build();
     }
+
     public ResponseEntity<Request> findByPhoneNumberAndAction(String phone, String action){
         Request request = requestRepository.findByPhoneNumberAndAction(phone, action);
         return ResponseEntity.ok(request);

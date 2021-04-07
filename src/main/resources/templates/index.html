@@ -97,7 +97,7 @@
         }).then(response => response.json())
             .then(json => {
                 buyCurrency(json);
-            });
+            })
     })
 
     function buyCurrency(currency) {
@@ -123,10 +123,11 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(request)
-            }).then(response => {
-                ccValue.value = sumValue.value = phoneNumberValue.value = '';
-                return response.json();
-            }).then(showRequest);
+            }).then(response => response.json())
+                .then(json => {
+                    ccValue.value = sumValue.value = phoneNumberValue.value = '';
+                    displayRequest(json);
+                })
         });
 
     fetch(baseUrl)
@@ -135,41 +136,31 @@
             displayRates(json);
         });
 
-    function showRequest() {
-        fetch(baseUrlRequest)
-            .then(response => response.json())
-            .then(json => {
-                displayRequest(json);
-            });
-    }
-
     function displayRequest(request) {
         console.log(request);
         const form = document.querySelector('#requestSave');
         form.innerHTML = '';
-        request.forEach(req => {
-            let div = document.createElement('div');
-            for (const prop in req) {
-                if (prop === 'sumPayment') {
-                    let p = document.createElement('p');
-                    p.append(document.createTextNode("Сумма к оплате " + req[prop] + " грн."));
-                    div.append(p);
-                }else if (prop === 'phoneNumber'){
-                    let p = document.createElement('p');
-                    p.append(document.createTextNode("СМС отправлено на номер " + req[prop]));
-                    div.append(p);
-                }
+        let div = document.createElement('div');
+        for (const prop in request) {
+            if (prop === 'sumPayment') {
+                let p = document.createElement('p');
+                p.append(document.createTextNode("Сумма к оплате " + request[prop] + " грн."));
+                div.append(p);
+            } else if (prop === 'phoneNumber') {
+                let p = document.createElement('p');
+                p.append(document.createTextNode("СМС отправлено на номер " + request[prop]));
+                div.append(p);
             }
-            let label = document.createElement('label');
-            label.append(document.createTextNode('Код: '));
-            let input = document.createElement('input');
-            let buttonElement = document.createElement("button");
-            buttonElement.className = "save";
-            const text = document.createTextNode("Подтвердить заявку");
-            buttonElement.append(text);
-            div.append(label, input, buttonElement);
-            form.append(div);
-        });
+        }
+        let label = document.createElement('label');
+        label.append(document.createTextNode('Код: '));
+        let input = document.createElement('input');
+        let buttonElement = document.createElement("button");
+        buttonElement.className = "save";
+        const text = document.createTextNode("Подтвердить заявку");
+        buttonElement.append(text);
+        div.append(label, input, buttonElement);
+        form.append(div);
     }
 
     $('div').on('click', '.save', function () {
@@ -182,7 +173,7 @@
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            form.innerHTML=''
+            form.innerHTML = ''
             return response.json();
         })
     });
