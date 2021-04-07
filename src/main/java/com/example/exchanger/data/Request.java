@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -28,5 +29,7 @@ public class Request {
     @NonNull
     @Column(name = "sum_payment")
     private BigDecimal sumPayment;
+
+    private LocalDate date;
 
 }

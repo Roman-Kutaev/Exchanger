@@ -30,18 +30,19 @@ public class CurrencyService {
         this.currencyRepository = repository;
     }
 
-        public List<Currency> getAllCourse(){
+    public List<Currency> getAllCourse() {
         String jsonCourseArray = restTemplate.getForEntity(url, String.class).getBody();
-            List<CourseBase> courseList = null;
-            try {
-                courseList = objectMapper.readValue(jsonCourseArray, new TypeReference<>(){});
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            assert courseList != null;
-            for (CourseBase course: courseList){
-               BigDecimal currencySale = course.getRate().multiply(new BigDecimal("0.95"));
-               BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal("1.05"));
+        List<CourseBase> courseList = null;
+        try {
+            courseList = objectMapper.readValue(jsonCourseArray, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        assert courseList != null;
+        for (CourseBase course : courseList) {
+            BigDecimal currencySale = course.getRate().multiply(new BigDecimal("0.95"));
+            BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal("1.05"));
             Currency currency = new Currency(course.getCc(), currencyPurchase, currencySale, course.getExchangedate());
             currencyRepository.save(currency);
         }
@@ -49,18 +50,18 @@ public class CurrencyService {
     }
 
 
-      public ResponseEntity<Currency> findCourseBiCC(String cc){
+    public ResponseEntity<Currency> findCourseBiCC(String cc) {
         Currency currency = currencyRepository.findCourseByCc(cc);
-        if (currency != null){
+        if (currency != null) {
             return ResponseEntity.ok(currency);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    public ResponseEntity<Currency> findCourseById(int id){
+    public ResponseEntity<Currency> findCourseById(int id) {
         Currency currency = currencyRepository.findById(id).orElse(null);
-        if (currency != null){
+        if (currency != null) {
             return ResponseEntity.ok(currency);
         } else {
             return ResponseEntity.notFound().build();

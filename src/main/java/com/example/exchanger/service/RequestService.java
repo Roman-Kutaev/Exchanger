@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -28,7 +30,7 @@ public class RequestService {
     public static final String STATUS_CANCELED = "Отменена";
     public static final String ACTION_PURCHASE = "Продажа";
     public static final String ACTION_SALE = "Покупка";
-    public static final Integer RANDOM_RANGE = 100;
+    public static final Integer RANDOM_RANGE = 1000;
 
     public RequestService(RequestRepository requestRepository, CurrencyRepository currencyRepository) {
         this.requestRepository = requestRepository;
@@ -58,11 +60,12 @@ public class RequestService {
             } else {
                 request.setSumPayment(null);
             }
+            request.setDate(LocalDateTime.now().toLocalDate());
 
             requestRepository.save(request);
             System.out.println("Save request = " + request);
 
-            System.out.println("Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
+            System.out.println(request.getDate()+ "Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());
 //            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 //            Message message = Message.creator(
@@ -102,5 +105,4 @@ public class RequestService {
         Request request = requestRepository.findByPhoneNumberAndAction(phone, action);
         return ResponseEntity.ok(request);
     }
-
 }
