@@ -2,6 +2,7 @@ package com.example.exchanger.service;
 
 import com.example.exchanger.data.Currency;
 import com.example.exchanger.data.Request;
+import com.example.exchanger.dto.Report;
 import com.example.exchanger.repository.CurrencyRepository;
 import com.example.exchanger.repository.RequestRepository;
 import com.twilio.Twilio;
@@ -11,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +44,7 @@ public class RequestService {
         return requestRepository.findAll();
     }
 
+    @Transactional()
     public ResponseEntity<?> saveRequest(Request request) {
         try {
             Random random = new Random();
@@ -101,8 +105,19 @@ public class RequestService {
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<Request> findByPhoneNumberAndAction(String phone, String action){
-        Request request = requestRepository.findByPhoneNumberAndAction(phone, action);
-        return ResponseEntity.ok(request);
+//    public ResponseEntity<Request> findByPhoneNumberAndAction(String phone, String action){
+//        Request request = requestRepository.findByPhoneNumberAndAction(phone, action);
+//        return ResponseEntity.ok(request);
+//    }
+
+    public List<Report> createReport(){
+        LocalDate date = LocalDateTime.now().toLocalDate();
+        return requestRepository.getReportByDay(date);
+    }
+
+    public List<Report> createCustomReport(String startDay, String endDay){
+        LocalDate startLocalDate = LocalDate.parse(startDay);
+        LocalDate endLocalDate = LocalDate.parse(endDay);
+        return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate);
     }
 }

@@ -22,5 +22,5 @@ public class Currency {
     @NonNull
     private BigDecimal sale;
     @NonNull
-    private String exchangedate;
+    private String exchangeDate;
 }

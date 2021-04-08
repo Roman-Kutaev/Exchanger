@@ -1,17 +1,23 @@
 package com.example.exchanger.api.controller;
 
 import com.example.exchanger.data.Request;
+import com.example.exchanger.dto.Report;
 import com.example.exchanger.service.RequestService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/exchanger/request")
 @CrossOrigin(origins = "*", methods = RequestMethod.GET)
 public class RequestController {
+
+    private static final Logger LOGGER = LogManager.getLogger(RequestController.class);
 
     private final RequestService requestService;
 
@@ -31,19 +37,30 @@ public class RequestController {
 
     @GetMapping(path = "/{code}")
     public ResponseEntity<Request> findRequestByCode(@PathVariable int code) {
-        System.out.println("code = " + code);
+        LOGGER.debug("code = " + code);
+//        System.out.println("code = " + code);
         return requestService.findRequestByCode(code);
     }
 
-    @GetMapping(path = "/{phoneNumber/action}")
-    public ResponseEntity<Request> findRequestByCode(@PathVariable String phoneNumber,String action) {
-        System.out.println("phoneNumber = " + phoneNumber);
-        System.out.println("action = " + action);
-        return requestService.findByPhoneNumberAndAction(phoneNumber, action);
-    }
+//    @GetMapping(path = "/{phoneNumber/action}")
+//    public ResponseEntity<Request> findRequestByCode(@PathVariable String phoneNumber,String action) {
+//        System.out.println("phoneNumber = " + phoneNumber);
+//        System.out.println("action = " + action);
+//        return requestService.findByPhoneNumberAndAction(phoneNumber, action);
+//    }
 
     @DeleteMapping(path = "/{phone}")
     public ResponseEntity<Request> deleteRequest(@PathVariable String phone){
         return requestService.deleteRequest(phone);
+    }
+
+    @GetMapping(path = "report")
+    public List<Report> createReport(){
+        return requestService.createReport();
+    }
+
+    @GetMapping(path = "report/{startDay}/{endDay}")
+    public List<Report> createCustomReport(@PathVariable String startDay, @PathVariable String endDay){
+        return requestService.createCustomReport(startDay, endDay);
     }
 }

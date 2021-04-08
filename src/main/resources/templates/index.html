@@ -55,7 +55,12 @@
 <script>
 
     const baseUrl = "http://localhost:8080/api/v1/exchanger";
-    const baseUrlRequest = "http://localhost:8080/api/v1/exchanger/request";
+
+    fetch(baseUrl)
+        .then(response => response.json())
+        .then(json => {
+            displayRates(json);
+        });
 
     function displayRates(currencyArr) {
         console.log(currencyArr);
@@ -105,6 +110,8 @@
         document.querySelector('#buyCc').value = currency.cc;
     }
 
+    const baseUrlRequest = "http://localhost:8080/api/v1/exchanger/request";
+
     document.querySelector("#calculate")
         .addEventListener('click', event => {
             let ccValue = document.querySelector('#buyCc');
@@ -130,11 +137,6 @@
                 })
         });
 
-    fetch(baseUrl)
-        .then(response => response.json())
-        .then(json => {
-            displayRates(json);
-        });
 
     function displayRequest(request) {
         console.log(request);
