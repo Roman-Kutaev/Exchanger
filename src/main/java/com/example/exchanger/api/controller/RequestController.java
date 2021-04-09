@@ -5,11 +5,15 @@ import com.example.exchanger.dto.Report;
 import com.example.exchanger.service.RequestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import javax.annotation.PreDestroy;
 import java.util.List;
 
 @RestController
@@ -27,7 +31,7 @@ public class RequestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody Request request) {
-       return requestService.saveRequest(request);
+        return requestService.saveRequest(request);
     }
 
     @GetMapping()
@@ -49,18 +53,27 @@ public class RequestController {
 //        return requestService.findByPhoneNumberAndAction(phoneNumber, action);
 //    }
 
-    @DeleteMapping(path = "/{phone}")
-    public ResponseEntity<Request> deleteRequest(@PathVariable String phone){
+    @DeleteMapping(path = "delete/{phone}")
+    public ResponseEntity<Request> deleteRequest(@PathVariable String phone) {
         return requestService.deleteRequest(phone);
     }
 
+    @PreDestroy
     @GetMapping(path = "report")
-    public List<Report> createReport(){
+    public List<Report> createReport() {
+        System.out.println("requestService.createReport() = " + requestService.createReport());
         return requestService.createReport();
     }
 
-    @GetMapping(path = "report/{startDay}/{endDay}")
-    public List<Report> createCustomReport(@PathVariable String startDay, @PathVariable String endDay){
-        return requestService.createCustomReport(startDay, endDay);
+    @GetMapping(path = "report/{startDay}/{endDay}/{cc}")
+    public List<Report> createCustomReport(@PathVariable String startDay, @PathVariable String endDay, @PathVariable String cc) {
+        return requestService.createCustomReport(startDay, endDay, cc);
     }
+
+    @PostMapping("/shutDownContext")
+    public void shutDownContext() {
+            requestService.shutDown();
+
+    }
+
 }

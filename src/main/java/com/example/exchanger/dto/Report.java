@@ -6,19 +6,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Report {
-    @NonNull
     private long countOperation;
-    @NonNull
     private BigDecimal sum;
-    @NonNull
     private String action;
-    @NonNull
     private String cc;
-    @NonNull
     private LocalDate date;
-
 
 }

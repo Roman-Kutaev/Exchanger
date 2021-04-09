@@ -8,21 +8,26 @@ import com.example.exchanger.repository.RequestRepository;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 @Service
-public class RequestService {
+public class RequestService implements ApplicationContextAware {
+    private ApplicationContext context;
     private final RequestRepository requestRepository;
     private final CurrencyRepository currencyRepository;
 //    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
@@ -34,6 +39,11 @@ public class RequestService {
     public static final String ACTION_PURCHASE = "Продажа";
     public static final String ACTION_SALE = "Покупка";
     public static final Integer RANDOM_RANGE = 1000;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
+    }
 
     public RequestService(RequestRepository requestRepository, CurrencyRepository currencyRepository) {
         this.requestRepository = requestRepository;
@@ -105,19 +115,22 @@ public class RequestService {
         return ResponseEntity.badRequest().build();
     }
 
-//    public ResponseEntity<Request> findByPhoneNumberAndAction(String phone, String action){
-//        Request request = requestRepository.findByPhoneNumberAndAction(phone, action);
-//        return ResponseEntity.ok(request);
-//    }
 
     public List<Report> createReport(){
         LocalDate date = LocalDateTime.now().toLocalDate();
         return requestRepository.getReportByDay(date);
     }
 
-    public List<Report> createCustomReport(String startDay, String endDay){
+    public List<Report> createCustomReport(String startDay, String endDay, String cc){
         LocalDate startLocalDate = LocalDate.parse(startDay);
         LocalDate endLocalDate = LocalDate.parse(endDay);
-        return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate);
+        return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate, cc);
     }
+
+    public void shutDown(){
+        ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) context;
+        ctx.close();
+    }
+
+
 }

@@ -23,7 +23,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
    List<Report> getReportByDay(@Param("date") LocalDate date);
 
 
-    @Query("select new com.example.exchanger.dto.Report(count (r.id) as countOperation, sum (r.sumPayment) as sum, r.cc as cc, r.date as date)" +
-            "from Request r where r.date >= :startDay and r.date <= :endDay group by r.cc ")
-    List<Report> getReportByDayAdnCC(@Param("startDay") LocalDate startDate, @Param("endDay") LocalDate endDate);
+    @Query("select new com.example.exchanger.dto.Report(count (r.id) as countOperation, sum (r.sumPayment) as sum, r.cc as cc,  r.action as action, r.date as date)" +
+            "from Request r where r.date >= :startDay and r.date <= :endDay group by r.cc, r.date, r.action having r.cc like :cc")
+    List<Report> getReportByDayAdnCC(@Param("startDay") LocalDate startDate, @Param("endDay") LocalDate endDate, @Param("cc") String cc);
 }
