@@ -39,19 +39,10 @@ public class RequestController {
         return requestService.findAllRequest();
     }
 
-    @GetMapping(path = "/{code}")
-    public ResponseEntity<Request> findRequestByCode(@PathVariable int code) {
-        LOGGER.debug("code = " + code);
-//        System.out.println("code = " + code);
-        return requestService.findRequestByCode(code);
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Request> changStatusRequest(@RequestBody Request request){
+        return requestService.changStatus(request);
     }
-
-//    @GetMapping(path = "/{phoneNumber/action}")
-//    public ResponseEntity<Request> findRequestByCode(@PathVariable String phoneNumber,String action) {
-//        System.out.println("phoneNumber = " + phoneNumber);
-//        System.out.println("action = " + action);
-//        return requestService.findByPhoneNumberAndAction(phoneNumber, action);
-//    }
 
     @DeleteMapping(path = "delete/{phone}")
     public ResponseEntity<Request> deleteRequest(@PathVariable String phone) {
@@ -72,7 +63,7 @@ public class RequestController {
 
     @PostMapping("/shutDownContext")
     public void shutDownContext() {
-            requestService.shutDown();
+        requestService.shutDown();
 
     }
 

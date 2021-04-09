@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -88,7 +90,7 @@ public class RequestService implements ApplicationContextAware {
 //                    "Вы подали заявку на " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc() +
 //                            "\nСумма к оплате " + request.getSumCurrency() + " грн.\nВаш код подтверждения " + request.getConfirmationCode()).create();
 
-            return ResponseEntity.created(URI.create("/api/v1/exchanger/request" + request.getId())).body(new Request(request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment()));
+            return ResponseEntity.status(201).body(new Request(request.getId(), request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment()));
         } catch (Throwable ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getLocalizedMessage());
         }
@@ -107,12 +109,34 @@ public class RequestService implements ApplicationContextAware {
         }
     }
 
-    public ResponseEntity<Request> deleteRequest(String phone){
-        Request request = requestRepository.findByPhoneNumber(phone);
-        if (request.getStatus().equals(STATUS_NEW)){
-            requestRepository.delete(request);
+    public ResponseEntity<Request> changStatus(Request newRequest) {
+        Request request  = requestRepository.findById(newRequest.getId()).orElse(null);
+        assert request != null;
+        if (newRequest.getConfirmationCode() == request.getConfirmationCode()){
+            request.setStatus(STATUS_COMPLETED);
+            requestRepository.saveAndFlush(request);
+            return ResponseEntity.status(200).build();
+        } else {
+            request.setStatus(STATUS_CANCELED);
+            requestRepository.saveAndFlush(request);
+            return ResponseEntity.status(204).build();
         }
-        return ResponseEntity.badRequest().build();
+
+    }
+
+
+    public ResponseEntity<Request> deleteRequest(String phone){
+        try {
+            Request request = requestRepository.findByPhoneNumber(phone);
+            if (request.getStatus().equals(STATUS_NEW)){
+                requestRepository.delete(request);
+                return ResponseEntity.status(200).build();
+            }
+            return ResponseEntity.status(204).build();
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 
@@ -131,6 +155,5 @@ public class RequestService implements ApplicationContextAware {
         ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) context;
         ctx.close();
     }
-
 
 }

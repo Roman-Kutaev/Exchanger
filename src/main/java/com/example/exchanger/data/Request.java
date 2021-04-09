@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "requests")
 public class Request {
+    @NonNull
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String cc;

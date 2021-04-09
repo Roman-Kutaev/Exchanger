@@ -34,10 +34,12 @@
         <option>Продажа</option>
     </select></label>
     <input id="sumBuy" required="required">
-    <label for="phoneNumber"></label><input id="phoneNumber" name="phone" required="required">
+    <label for="phone"></label><input id="phone" name="phone" required="required">
     <button id="calculate">Подать заявку</button>
 </div>
-<div name="rs" id="requestSave"></div>
+<div name="rs" id="requestSave">
+<!--    <input id="updateID">-->
+</div>
 <br>
 <hr>
 <table>
@@ -101,14 +103,9 @@
             }
         }).then(response => response.json())
             .then(json => {
-                buyCurrency(json);
+                document.querySelector('#buyCc').value = json.cc;
             })
     })
-
-    function buyCurrency(currency) {
-        document.querySelector('#buyId').value = currency.id;
-        document.querySelector('#buyCc').value = currency.cc;
-    }
 
     const baseUrlRequest = "http://localhost:8080/api/v1/exchanger/request";
 
@@ -117,7 +114,7 @@
             let ccValue = document.querySelector('#buyCc');
             let actionValue = document.querySelector('#act');
             let sumValue = document.querySelector('#sumBuy');
-            let phoneNumberValue = document.querySelector('#phoneNumber');
+            let phoneNumberValue = document.querySelector('#phone');
             const request = {
                 cc: ccValue.value,
                 action: actionValue.value,
@@ -132,7 +129,7 @@
                 body: JSON.stringify(request)
             }).then(response => response.json())
                 .then(json => {
-                    ccValue.value = sumValue.value = phoneNumberValue.value = '';
+                    // ccValue.value = sumValue.value = phoneNumberValue.value = '';
                     displayRequest(json);
                 })
         });
@@ -148,11 +145,16 @@
             if (prop === 'sumPayment') {
                 let p = document.createElement('p');
                 p.append(document.createTextNode("Сумма к оплате " + request[prop] + " грн."));
+                p.className = 'sumPayment';
                 div.append(p);
             } else if (prop === 'phoneNumber') {
                 let p = document.createElement('p');
                 p.append(document.createTextNode("СМС отправлено на номер " + request[prop]));
+                p.className = prop;
                 div.append(p);
+            } else if (prop === 'id'){
+                console.log(request[prop]);
+               document.querySelector('#buyId').value = request[prop];
             }
         }
         let label = document.createElement('label');
@@ -168,16 +170,31 @@
 
     $('div').on('click', '.save', function () {
         const form = document.querySelector('#requestSave');
-        let code = form.getElementsByTagName('input').item(0).value
+        let code = form.getElementsByTagName('input')[0].value
         console.log(code)
-        fetch(baseUrlRequest + "/" + code, {
-            method: 'GET',
+        let id = document.querySelector('#buyId').value;
+        let ccValue = document.querySelector('#buyCc');
+        let actionValue = document.querySelector('#act');
+        let sumValue = document.querySelector('#sumBuy');
+        let phoneNumberValue = document.querySelector('#phone');
+        const request = {
+            id: id,
+            confirmationCode:code,
+            cc: ccValue.value,
+            action: actionValue.value,
+            sumCurrency: sumValue.value,
+            phoneNumber: phoneNumberValue.value
+        };
+        console.log(request)
+        fetch(baseUrlRequest + "/" + id, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(request)
         }).then(response => {
-            form.innerHTML = ''
-            return response.json();
+            ccValue.value = sumValue.value = phoneNumberValue.value = '';
+            form.innerHTML = '';
         })
     });
 
