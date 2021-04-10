@@ -52,7 +52,7 @@ public class RequestController {
     @PreDestroy
     @GetMapping(path = "report")
     public List<Report> createReport() {
-        System.out.println("requestService.createReport() = " + requestService.createReport());
+        System.out.println("Report = " + requestService.createReport());
         return requestService.createReport();
     }
 
@@ -64,7 +64,6 @@ public class RequestController {
     @PostMapping("/shutDownContext")
     public void shutDownContext() {
         requestService.shutDown();
-
     }
 
 }

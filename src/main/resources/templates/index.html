@@ -20,12 +20,45 @@
         border: 1px solid green;
         margin: auto;
     }
+    dialog{
+        border-radius: 20px;
+        background: #a5d4d4;
+    }
+    /*dialog::backdrop{*/
+    /*    background-color: rgba(0,0,0,1);*/
+    /*}*/
 
 
 </style>
 <body>
 <br>
-
+<div>
+    <p>Формирование отчетов</p>
+    <label for="startDate">Начальная дата </label><input id="startDate">
+    <label for="endDate">Конечная дата </label><input id="endDate">
+    <label for="currency">Тип Валюты </label><input id="currency">
+    <p><button id="showReport">Сформировать отчет</button></p>
+    <hr>
+    <p> Завершить работу приложения и сформировать отчет <button id="showReportByDay">Отчет за день</button></p>
+</div>
+<br>
+<dialog>
+    <table>
+        <thead>
+        <tr>
+            <td>Количество заявок</td>
+            <td>Сумма</td>
+            <td>Операция</td>
+            <td>Валюта</td>
+            <td>Дата</td>
+        </tr>
+        </thead>
+        <tbody id="bodyReport">
+        </tbody>
+    </table>
+    <button id="close">закрыть окно</button>
+</dialog>
+<br>
 <div id="calculateForm">
     <input hidden id="buyId">
     <input id="buyCc" disabled>
@@ -38,7 +71,6 @@
     <button id="calculate">Подать заявку</button>
 </div>
 <div name="rs" id="requestSave">
-<!--    <input id="updateID">-->
 </div>
 <br>
 <hr>
@@ -54,7 +86,11 @@
     <tbody id="body">
     </tbody>
 </table>
+
+
 <script>
+
+    // Отображение курса
 
     const baseUrl = "http://localhost:8080/api/v1/exchanger";
 
@@ -65,7 +101,7 @@
         });
 
     function displayRates(currencyArr) {
-        console.log(currencyArr);
+        console.log('currencyArr = ' + currencyArr);
         const tbody = document.querySelector('#body');
         tbody.innerHTML = '';
         currencyArr.forEach(currency => {
@@ -92,6 +128,8 @@
         td.append(buttonElement)
         return td;
     }
+
+    // Отображение заявки
 
     $('tbody').on('click', '.buy', function () {
         let cc = $(this).attr("rateCc");
@@ -129,10 +167,10 @@
                 body: JSON.stringify(request)
             }).then(response => response.json())
                 .then(json => {
-                    // ccValue.value = sumValue.value = phoneNumberValue.value = '';
                     displayRequest(json);
                 })
         });
+
 
 
     function displayRequest(request) {
@@ -197,6 +235,75 @@
             form.innerHTML = '';
         })
     });
+
+    // Отображение отчетов
+
+    const baseUrlReport = "http://localhost:8080/api/v1/exchanger/request/report";
+
+    document.querySelector("#showReport").
+        addEventListener('click', event =>{
+            let startDate = document.querySelector('#startDate').value;
+            let endDate = document.querySelector('#endDate').value;
+            let currency = document.querySelector('#currency').value;
+            console.log('startDate = ' + startDate);
+        fetch(baseUrlReport + "/" + startDate + "/" + endDate + "/" + currency,{
+            method:'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+            .then(json => {
+                startDate = endDate = currency = '';
+                show(json);
+            });
+    })
+
+    function show(reportArr) {
+        console.log('Report = ' + reportArr);
+        const tbody = document.querySelector('#bodyReport');
+        tbody.innerHTML = '';
+        reportArr.forEach(report => {
+            let tr = document.createElement('tr');
+            for (const prop in report) {
+                    let td = document.createElement('td');
+                    td.append(document.createTextNode(report[prop]));
+                    tr.append(td);
+            }
+            tbody.append(tr);
+        });
+    }
+
+    document.querySelector("#showReportByDay")
+        .addEventListener('click', evt => {
+            fetch(baseUrlRequest + "/shutDownContext"
+                , {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+        })
+
+    document.querySelector("#showReportByDay")
+        .addEventListener('click', evt => {
+            fetch(baseUrlReport)
+                .then(response => response.json())
+                .then(json => {
+                    show(json);
+                });
+        })
+
+       const dialog = document.querySelector('dialog');
+    document.querySelector("#showReportByDay").onclick =
+        document.querySelector("#showReport").onclick = function (){
+           dialog.show();
+           // dialog.showModal();
+          }
+
+       document.querySelector("#close").onclick = function (){
+           dialog.close();
+       }
 
 </script>
 </body>
