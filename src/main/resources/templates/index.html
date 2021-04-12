@@ -20,13 +20,12 @@
         border: 1px solid green;
         margin: auto;
     }
-    dialog{
+
+    dialog {
         border-radius: 20px;
-        background: #a5d4d4;
+        background: #e6f1f1;
+        text-align: center;
     }
-    /*dialog::backdrop{*/
-    /*    background-color: rgba(0,0,0,1);*/
-    /*}*/
 
 
 </style>
@@ -37,9 +36,13 @@
     <label for="startDate">Начальная дата </label><input id="startDate">
     <label for="endDate">Конечная дата </label><input id="endDate">
     <label for="currency">Тип Валюты </label><input id="currency">
-    <p><button id="showReport">Сформировать отчет</button></p>
+    <p>
+        <button id="showReport">Сформировать отчет</button>
+    </p>
     <hr>
-    <p> Завершить работу приложения и сформировать отчет <button id="showReportByDay">Отчет за день</button></p>
+    <p> Завершить работу приложения и сформировать отчет
+        <button id="showReportByDay">Отчет за день</button>
+    </p>
 </div>
 <br>
 <dialog>
@@ -48,30 +51,30 @@
         <tr>
             <td>Количество заявок</td>
             <td>Сумма</td>
-            <td>Операция</td>
             <td>Валюта</td>
+            <td>Операция</td>
             <td>Дата</td>
         </tr>
         </thead>
         <tbody id="bodyReport">
         </tbody>
     </table>
+    <br>
     <button id="close">закрыть окно</button>
 </dialog>
 <br>
-<div id="calculateForm">
-    <input hidden id="buyId">
-    <input id="buyCc" disabled>
+<div id="calculateForm" hidden>
+    <label for="buyId"></label><input hidden id="buyId">
+    <label for="buyCc"></label><input id="buyCc" disabled>
     <label><select id="act">
         <option>Покупка</option>
         <option>Продажа</option>
     </select></label>
-    <input id="sumBuy" required="required">
-    <label for="phone"></label><input id="phone" name="phone" required="required">
+    <label for="sumBuy">Сумма: </label><input id="sumBuy" required="required">
+    <label for="phone">Телефон: </label><input id="phone" name="phone" required="required">
     <button id="calculate">Подать заявку</button>
 </div>
-<div name="rs" id="requestSave">
-</div>
+<div name="rs" id="requestSave" hidden></div>
 <br>
 <hr>
 <table>
@@ -141,6 +144,7 @@
             }
         }).then(response => response.json())
             .then(json => {
+                document.getElementById("calculateForm").hidden = false;
                 document.querySelector('#buyCc').value = json.cc;
             })
     })
@@ -167,10 +171,10 @@
                 body: JSON.stringify(request)
             }).then(response => response.json())
                 .then(json => {
+                    document.getElementById("requestSave").hidden = false;
                     displayRequest(json);
                 })
         });
-
 
 
     function displayRequest(request) {
@@ -190,9 +194,9 @@
                 p.append(document.createTextNode("СМС отправлено на номер " + request[prop]));
                 p.className = prop;
                 div.append(p);
-            } else if (prop === 'id'){
+            } else if (prop === 'id') {
                 console.log(request[prop]);
-               document.querySelector('#buyId').value = request[prop];
+                document.querySelector('#buyId').value = request[prop];
             }
         }
         let label = document.createElement('label');
@@ -217,7 +221,7 @@
         let phoneNumberValue = document.querySelector('#phone');
         const request = {
             id: id,
-            confirmationCode:code,
+            confirmationCode: code,
             cc: ccValue.value,
             action: actionValue.value,
             sumCurrency: sumValue.value,
@@ -232,6 +236,8 @@
             body: JSON.stringify(request)
         }).then(response => {
             ccValue.value = sumValue.value = phoneNumberValue.value = '';
+            document.getElementById("calculateForm").hidden = true;
+            document.getElementById("requestSave").hidden = true;
             form.innerHTML = '';
         })
     });
@@ -240,20 +246,19 @@
 
     const baseUrlReport = "http://localhost:8080/api/v1/exchanger/request/report";
 
-    document.querySelector("#showReport").
-        addEventListener('click', event =>{
-            let startDate = document.querySelector('#startDate').value;
-            let endDate = document.querySelector('#endDate').value;
-            let currency = document.querySelector('#currency').value;
-            console.log('startDate = ' + startDate);
-        fetch(baseUrlReport + "/" + startDate + "/" + endDate + "/" + currency,{
-            method:'GET',
+    document.querySelector("#showReport").addEventListener('click', event => {
+        let startDate = document.querySelector('#startDate');
+        let endDate = document.querySelector('#endDate');
+        let currency = document.querySelector('#currency');
+        console.log('startDate = ' + startDate);
+        fetch(baseUrlReport + "/" + startDate.value + "/" + endDate.value + "/" + currency.value, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
             .then(json => {
-                startDate = endDate = currency = '';
+                startDate.value = endDate.value = currency.value = '';
                 show(json);
             });
     })
@@ -265,9 +270,9 @@
         reportArr.forEach(report => {
             let tr = document.createElement('tr');
             for (const prop in report) {
-                    let td = document.createElement('td');
-                    td.append(document.createTextNode(report[prop]));
-                    tr.append(td);
+                let td = document.createElement('td');
+                td.append(document.createTextNode(report[prop]));
+                tr.append(td);
             }
             tbody.append(tr);
         });
@@ -294,16 +299,15 @@
                 });
         })
 
-       const dialog = document.querySelector('dialog');
+    const dialog = document.querySelector('dialog');
     document.querySelector("#showReportByDay").onclick =
-        document.querySelector("#showReport").onclick = function (){
-           dialog.show();
-           // dialog.showModal();
-          }
+        document.querySelector("#showReport").onclick = function () {
+            dialog.showModal();
+        }
 
-       document.querySelector("#close").onclick = function (){
-           dialog.close();
-       }
+    document.querySelector("#close").onclick = function () {
+        dialog.close();
+    }
 
 </script>
 </body>

@@ -13,18 +13,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -62,8 +58,9 @@ public class RequestService implements ApplicationContextAware {
             Random random = new Random();
             int code = random.nextInt(RANDOM_RANGE) + RANDOM_RANGE;
 
-            request.setStatus(STATUS_NEW);
             request.setConfirmationCode(code);
+
+            request.setStatus(STATUS_NEW);
 
             Currency currency = currencyRepository.findCourseByCc(request.getCc());
             BigDecimal sumPayment;
@@ -136,7 +133,6 @@ public class RequestService implements ApplicationContextAware {
         } catch (Exception e){
             return ResponseEntity.notFound().build();
         }
-
     }
 
 
