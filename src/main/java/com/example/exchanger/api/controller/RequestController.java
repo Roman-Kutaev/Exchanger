@@ -9,9 +9,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PreDestroy;
 import java.util.List;
@@ -31,7 +33,12 @@ public class RequestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody Request request) {
-        return requestService.saveRequest(request);
+        try {
+            return requestService.saveRequest(request);
+        } catch (Exception ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Введены не корректные данные!", ex);
+        }
     }
 
     @GetMapping()
@@ -40,7 +47,7 @@ public class RequestController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Request> changStatusRequest(@RequestBody Request request){
+    public ResponseEntity<Request> changStatusRequest(@RequestBody Request request) {
         return requestService.changStatus(request);
     }
 

@@ -87,22 +87,9 @@ public class RequestService implements ApplicationContextAware {
 //                    "Вы подали заявку на " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc() +
 //                            "\nСумма к оплате " + request.getSumCurrency() + " грн.\nВаш код подтверждения " + request.getConfirmationCode()).create();
 
-            return ResponseEntity.status(201).body(new Request(request.getId(), request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment()));
+            return ResponseEntity.status(HttpStatus.OK).body(new Request(request.getId(), request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment()));
         } catch (Throwable ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getLocalizedMessage());
-        }
-    }
-
-    public ResponseEntity<Request> findRequestByCode(int code) {
-        Request request = requestRepository.findByConfirmationCode(code);
-        if (request != null) {
-            request.setStatus(STATUS_COMPLETED);
-            requestRepository.save(request);
-            System.out.println("Service request = " + request);
-            return ResponseEntity.ok(request);
-        } else {
-            System.out.println("ResponseEntity.notFound().build() " + ResponseEntity.notFound().build());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getLocalizedMessage());
         }
     }
 
@@ -112,11 +99,11 @@ public class RequestService implements ApplicationContextAware {
         if (newRequest.getConfirmationCode() == request.getConfirmationCode()){
             request.setStatus(STATUS_COMPLETED);
             requestRepository.saveAndFlush(request);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             request.setStatus(STATUS_CANCELED);
             requestRepository.saveAndFlush(request);
-            return ResponseEntity.status(204).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
     }
@@ -144,7 +131,7 @@ public class RequestService implements ApplicationContextAware {
     public List<Report> createCustomReport(String startDay, String endDay, String cc){
         LocalDate startLocalDate = LocalDate.parse(startDay);
         LocalDate endLocalDate = LocalDate.parse(endDay);
-        return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate, cc);
+        return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate, cc.toUpperCase());
     }
 
     public void shutDown(){

@@ -27,15 +27,14 @@
         text-align: center;
     }
 
-
 </style>
 <body>
 <br>
 <div>
     <p>Формирование отчетов</p>
-    <label for="startDate">Начальная дата </label><input id="startDate">
-    <label for="endDate">Конечная дата </label><input id="endDate">
-    <label for="currency">Тип Валюты </label><input id="currency">
+    <label for="startDate">Начальная дата </label><input id="startDate" type="date" name="calendar">
+    <label for="endDate">Конечная дата </label><input id="endDate" type="date" name="calendar">
+    <label for="currency">Тип Валюты </label><input id="currency" required="required">
     <p>
         <button id="showReport">Сформировать отчет</button>
     </p>
@@ -169,17 +168,25 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(request)
+            }).then(function (response) {
+                if (response.status !== 200) {
+                    console.log('status = ' + response.status)
+                    return Promise.reject(new Error())
+                }
+                return Promise.resolve(response)
             }).then(response => response.json())
                 .then(json => {
                     document.getElementById("requestSave").hidden = false;
                     displayRequest(json);
                 })
+                .catch(function () {
+                    alert('Заявка не сохранена, ошибка заполнения данных')
+                })
         });
 
 
     function displayRequest(request) {
-        console.log(request);
-        console.log(request.id);
+        console.log("Request = " + request)
         const form = document.querySelector('#requestSave');
         form.innerHTML = '';
         let div = document.createElement('div');
@@ -234,13 +241,23 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(request)
-        }).then(response => {
+        }).then(function (response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error())
+            }
+            return Promise.resolve(response)
+        }).then(function() {
+            alert('Ваша заявка успешно выполнена.')
+        }).catch(function () {
+            alert('Неверный код подтверждения, заявка отклонена.')
+        }).finally(function () {
             ccValue.value = sumValue.value = phoneNumberValue.value = '';
             document.getElementById("calculateForm").hidden = true;
             document.getElementById("requestSave").hidden = true;
             form.innerHTML = '';
         })
     });
+
 
     // Отображение отчетов
 
