@@ -1,20 +1,20 @@
-//package com.example.exchanger.config;
-//
-//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-//
-//@EnableWebSecurity
-//public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-////        http.formLogin()
-////                .and()
-////                .authorizeRequests()
-////                .antMatchers("/").permitAll()
-////                .antMatchers("/report").authenticated();
-//        http.authorizeRequests().anyRequest().permitAll();
-//    }
-//}
+package com.example.exchanger.config;
+
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+//        http.formLogin()
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/").permitAll()
+//                .antMatchers("/report").authenticated();
+        http.csrf().disable().authorizeRequests().anyRequest().permitAll();
+    }
+}
