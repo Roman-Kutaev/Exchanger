@@ -1,0 +1,18 @@
+th, td {
+    width: 150px;
+    border: 1px solid darkgreen;
+    text-align: center;
+}
+
+table, div {
+    width: 900px;
+    text-align: center;
+    border: 1px solid green;
+    margin: auto;
+}
+
+dialog {
+    border-radius: 20px;
+    background: #e6f1f1;
+    text-align: center;
+}

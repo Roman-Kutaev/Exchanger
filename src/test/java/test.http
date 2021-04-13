@@ -28,11 +28,6 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8080/shutdownContext
-Accept: application/json
-Content-Type: application/json
-
-###
 DELETE http://localhost:8080/api/v1/exchanger/request/delete/38096111111
 Accept: application/json
 Content-Type: application/json

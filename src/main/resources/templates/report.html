@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" th:href="@{css/style.css}"/>
+<body>
+<br>
+<div>
+    <p>Формирование отчетов</p>
+    <label for="startDate">Начальная дата </label><input id="startDate" type="date" name="calendar">
+    <label for="endDate">Конечная дата </label><input id="endDate" type="date" name="calendar">
+    <label for="currency">Тип Валюты </label><input id="currency" required="required">
+    <p>
+        <button id="showReport">Сформировать отчет</button>
+    </p>
+    <hr>
+    <p> Завершить работу приложения и сформировать отчет
+        <button id="showReportByDay">Отчет за день</button>
+    </p>
+</div>
+<br>
+<dialog>
+    <table>
+        <thead>
+        <tr>
+            <td>Количество заявок</td>
+            <td>Сумма</td>
+            <td>Валюта</td>
+            <td>Операция</td>
+            <td>Дата</td>
+        </tr>
+        </thead>
+        <tbody id="bodyReport">
+        </tbody>
+    </table>
+    <br>
+    <button id="close">закрыть окно</button>
+</dialog>
+<script type="text/javascript" th:src="@{/js/report.js}"></script>
+</body>
+</html>

@@ -68,9 +68,4 @@ public class RequestController {
         return requestService.createCustomReport(startDay, endDay, cc);
     }
 
-    @PostMapping("/shutDownContext")
-    public void shutDownContext() {
-        requestService.shutDown();
-    }
-
 }

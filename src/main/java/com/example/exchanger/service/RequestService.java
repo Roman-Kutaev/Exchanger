@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class RequestService implements ApplicationContextAware {
-    private ApplicationContext context;
+public class RequestService {
     private final RequestRepository requestRepository;
     private final CurrencyRepository currencyRepository;
 //    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
@@ -37,11 +36,6 @@ public class RequestService implements ApplicationContextAware {
     public static final String ACTION_PURCHASE = "Продажа";
     public static final String ACTION_SALE = "Покупка";
     public static final Integer RANDOM_RANGE = 1000;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
-    }
 
     public RequestService(RequestRepository requestRepository, CurrencyRepository currencyRepository) {
         this.requestRepository = requestRepository;
@@ -134,9 +128,5 @@ public class RequestService implements ApplicationContextAware {
         return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate, cc.toUpperCase());
     }
 
-    public void shutDown(){
-        ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) context;
-        ctx.close();
-    }
 
 }

@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 public class HomeController {
 
     @GetMapping
-    private String index(Model model) {
-        model.addAttribute("time", LocalDateTime.now().toLocalTime());
-//        List<OurBankRate> purchaseList = courseService.getAllCourse();
-//        model.addAttribute("courses", purchaseList);
-
+    private String index() {
         return "index";
+    }
+
+    @GetMapping("/report")
+    public String create() {
+        return "report";
     }
 }
