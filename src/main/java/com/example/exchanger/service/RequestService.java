@@ -108,9 +108,10 @@ public class RequestService {
             Request request = requestRepository.findByPhoneNumber(phone);
             if (request.getStatus().equals(STATUS_NEW)){
                 requestRepository.delete(request);
-                return ResponseEntity.status(200).build();
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } else {
+                return ResponseEntity.status(204).build();
             }
-            return ResponseEntity.status(204).build();
         } catch (Exception e){
             return ResponseEntity.notFound().build();
         }

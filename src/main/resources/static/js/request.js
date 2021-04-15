@@ -37,7 +37,6 @@ document.querySelector("#calculate")
             body: JSON.stringify(request)
         }).then(function (response) {
             if (response.status !== 200) {
-                console.log('status = ' + response.status)
                 return Promise.reject(new Error())
             }
             return Promise.resolve(response)

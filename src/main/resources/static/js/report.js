@@ -56,6 +56,29 @@ document.querySelector("#showReportByDay")
             });
     })
 
+document.querySelector("#deleteRequest")
+    .addEventListener('click', evt => {
+        let phone = document.querySelector("#phoneNumber")
+        console.log('phone = ' + phone.value)
+        fetch(baseUrlRequest + "/delete/" + phone.value,
+            {
+                method: 'DELETE',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            } ).then(function (response) {
+                phone.value = '';
+            if (response.status === 200) {
+               alert('Заявка удалена.')
+            }
+            else if (response.status === 204){
+                alert('Статус заявки не "Новая".')
+            } else{
+                alert('По данному номеру телефона заявку не найдено.')
+            }
+        })
+    })
+
 const dialog = document.querySelector('dialog');
 document.querySelector("#showReportByDay").onclick =
     document.querySelector("#showReport").onclick = function () {
