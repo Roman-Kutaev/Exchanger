@@ -50,29 +50,26 @@ public class RequestService {
     public ResponseEntity<?> saveRequest(Request request) {
         try {
             Random random = new Random();
-            int code = random.nextInt(RANDOM_RANGE) + RANDOM_RANGE;
+            int code = random.nextInt(RANDOM_RANGE);
 
             request.setConfirmationCode(code);
 
             request.setStatus(STATUS_NEW);
 
             Currency currency = currencyRepository.findCourseByCc(request.getCc());
-            BigDecimal sumPayment;
             if (request.getAction().equals(ACTION_PURCHASE)) {
-                sumPayment = currency.getPurchase().multiply(request.getSumCurrency());
-                request.setSumPayment(sumPayment);
+                request.setSumPayment(currency.getPurchase().multiply(request.getSumCurrency()));
             } else if (request.getAction().equals(ACTION_SALE)) {
-                sumPayment = currency.getSale().multiply(request.getSumCurrency());
-                request.setSumPayment(sumPayment);
+                request.setSumPayment(currency.getSale().multiply(request.getSumCurrency()));
             } else {
-                request.setSumPayment(null);
+                throw new Throwable();
             }
             request.setDate(LocalDateTime.now().toLocalDate());
 
             requestRepository.save(request);
             System.out.println("Save request = " + request);
 
-            System.out.println(request.getDate()+ "Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
+            System.out.println(request.getDate() + " Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());
 //            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 //            Message message = Message.creator(
@@ -87,24 +84,24 @@ public class RequestService {
         }
     }
 
-    public ResponseEntity<Request> changStatus(Request newRequest) {
-        try {
-            Request request = requestRepository.findById(newRequest.getId()).orElse(null);
-            assert request != null;
-            if (newRequest.getConfirmationCode() == request.getConfirmationCode()) {
+    public ResponseEntity<Request> changStatus(int id, int code) {
+            Request request = requestRepository.findById(id).orElse(null);
+            if (request == null){
+                return ResponseEntity.notFound().build();
+            }
+
+            if (code == request.getConfirmationCode()) {
                 request.setStatus(STATUS_COMPLETED);
                 requestRepository.saveAndFlush(request);
+                System.out.println("Service request = " + request);
                 return ResponseEntity.status(HttpStatus.OK).build();
             } else {
                 request.setStatus(STATUS_CANCELED);
                 requestRepository.saveAndFlush(request);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-        }catch (Exception e){
-            return ResponseEntity.notFound().build();
-        }
 
-    }
+        }
 
 
     public ResponseEntity<Request> deleteRequest(String phone){
@@ -114,13 +111,12 @@ public class RequestService {
                 requestRepository.delete(request);
                 return ResponseEntity.status(HttpStatus.OK).build();
             } else {
-                return ResponseEntity.status(204).build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
         } catch (Exception e){
             return ResponseEntity.notFound().build();
         }
     }
-
 
     public List<Report> createReport(){
         LocalDate date = LocalDateTime.now().toLocalDate();
@@ -128,10 +124,10 @@ public class RequestService {
     }
 
     public List<Report> createCustomReport(String startDay, String endDay, String cc){
-        LocalDate startLocalDate = LocalDate.parse(startDay);
-        LocalDate endLocalDate = LocalDate.parse(endDay);
-        return requestRepository.getReportByDayAdnCC(startLocalDate, endLocalDate, cc.toUpperCase());
+        LocalDate startDate = LocalDate.parse(startDay);
+        LocalDate endDate = LocalDate.parse(endDay);
+        String ccFormat = cc.toUpperCase();
+        return requestRepository.getReportByDayAdnCC(startDate, endDate, ccFormat);
     }
-
 
 }

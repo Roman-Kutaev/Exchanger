@@ -46,9 +46,9 @@ public class RequestController {
         return requestService.findAllRequest();
     }
 
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<Request> changStatusRequest(@RequestBody Request request) {
-        return requestService.changStatus(request);
+    @GetMapping(path = "/{id}/{code}")
+    public ResponseEntity<Request> changStatusRequest(@PathVariable int id, @PathVariable int code) {
+        return requestService.changStatus(id, code);
     }
 
     @DeleteMapping(path = "delete/{phone}")

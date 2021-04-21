@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.example.exchanger.service.RequestService.STATUS_COMPLETED;
@@ -38,15 +40,40 @@ class RequestServiceTest {
     }
 
     @Test
-    void changStatus() {
+    void changStatusSuccess() {
         int id = 0;
+        int code = 123;
         Request request = new Request();
+        request.setConfirmationCode(123);
 
-        when(requestRepository.findById(eq(id))).thenReturn(Optional.of(new Request()));
-        ResponseEntity<Request> result = service.changStatus(request);
+        when(requestRepository.findById(eq(id))).thenReturn(Optional.of(request));
+        ResponseEntity<Request> result = service.changStatus(id,code);
 
         verify(requestRepository, times(1)).saveAndFlush(any(Request.class));
         assertEquals(200, result.getStatusCodeValue());
+    }
+
+    @Test
+    void changStatusSuccessWrong() {
+        int id = 0;
+        int code = 123;
+        Request request = new Request();
+        request.setConfirmationCode(321);
+
+        when(requestRepository.findById(eq(id))).thenReturn(Optional.of(request));
+        ResponseEntity<Request> result = service.changStatus(id,code);
+
+        verify(requestRepository, times(1)).saveAndFlush(any(Request.class));
+        assertEquals(400, result.getStatusCodeValue());
+    }
+
+    @Test
+    void changStatusNotFound(){
+        int id = 0;
+        int code = 123;
+        ResponseEntity<Request> result = service.changStatus(id, code);
+        verify(requestRepository, never()).saveAndFlush(any(Request.class));
+        assertEquals(404, result.getStatusCodeValue());
     }
 
     @Test
@@ -64,6 +91,7 @@ class RequestServiceTest {
 
     @Test
     void deleteRequestWrongStatus() {
+
         String phone = "PHONE";
         Request request = new Request();
         request.setStatus(STATUS_COMPLETED);
@@ -84,9 +112,19 @@ class RequestServiceTest {
 
     @Test
     void createReport() {
+        service.createReport();
+        verify(requestRepository).getReportByDay(LocalDateTime.now().toLocalDate());
     }
 
     @Test
     void createCustomReport() {
+        String startDate = "2021-04-02";
+        String endDate = "2021-04-14";
+        String cc = "usd";
+        service.createCustomReport(startDate,endDate,cc);
+        LocalDate startDay = LocalDate.parse(startDate);
+        LocalDate endDay = LocalDate.parse(endDate);
+        String ccFormat = cc.toUpperCase();
+        verify(requestRepository).getReportByDayAdnCC(startDay,endDay,ccFormat);
     }
 }

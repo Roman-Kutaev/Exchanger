@@ -42,6 +42,7 @@ document.querySelector("#calculate")
             return Promise.resolve(response)
         }).then(response => response.json())
             .then(json => {
+                ccValue.value = sumValue.value = phoneNumberValue.value = '';
                 document.getElementById("requestSave").hidden = false;
                 displayRequest(json);
             })
@@ -86,27 +87,15 @@ function displayRequest(request) {
 $('div').on('click', '.save', function () {
     const form = document.querySelector('#requestSave');
     let code = form.getElementsByTagName('input')[0].value
-    console.log(code)
     let id = document.querySelector('#buyId').value;
-    let ccValue = document.querySelector('#buyCc');
-    let actionValue = document.querySelector('#act');
-    let sumValue = document.querySelector('#sumBuy');
-    let phoneNumberValue = document.querySelector('#phone');
-    const request = {
-        id: id,
-        confirmationCode: code,
-        cc: ccValue.value,
-        action: actionValue.value,
-        sumCurrency: sumValue.value,
-        phoneNumber: phoneNumberValue.value
-    };
-    console.log(request)
-    fetch(baseUrlRequest + "/" + id, {
-        method: 'PUT',
+
+    console.log('id + code = ' + id + ' / ' + code )
+    fetch(baseUrlRequest + "/" + id + "/" + code, {
+
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        }
     }).then(function (response) {
         if (response.status !== 200) {
             return Promise.reject(new Error())
@@ -117,7 +106,6 @@ $('div').on('click', '.save', function () {
     }).catch(function () {
         alert('Неверный код подтверждения, заявка отклонена.')
     }).finally(function () {
-        ccValue.value = sumValue.value = phoneNumberValue.value = '';
         document.getElementById("calculateForm").hidden = true;
         document.getElementById("requestSave").hidden = true;
         form.innerHTML = '';

@@ -1,16 +1,10 @@
-GET http://localhost:8080/api/v1/exchanger/EUR
-Accept: application/json
-Content-Type: application/json
-
-###
-
 GET http://localhost:8080/api/v1/exchanger
 Accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/api/v1/exchanger/request
+GET http://localhost:8080/api/v1/exchanger/USD
 Accept: application/json
 Content-Type: application/json
 
@@ -41,7 +35,7 @@ Content-Type: application/json
 ###
 
 
-GET http://localhost:8080/api/v1/exchanger/request/report/2021-04-02/2021-04-10/USD
+GET http://localhost:8080/api/v1/exchanger/request/report/2021-04-02/2021-04-14/USD
 Accept: application/json
 Content-Type: application/json
 

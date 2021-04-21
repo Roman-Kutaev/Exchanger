@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class Currency {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "currency_id")
     private int Id;
     @NonNull
     private String cc;

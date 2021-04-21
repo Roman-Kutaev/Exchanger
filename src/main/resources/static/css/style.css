@@ -10,6 +10,17 @@ table, div {
     border: 1px solid green;
     margin: auto;
 }
+caption{
+    font-size: 25px;
+}
+/*body {*/
+/*    background: #8d8b92 url(img/54a99795ead1f.jpg); !* Цвет фона и путь к файлу *!*/
+/*    color: #fff; !* Цвет текста *!*/
+/*}*/
+body {
+    background-image: url(img/Euro.jpg); /* Путь к фоновому изображению */
+    background-color: #c7b39b; /* Цвет фона */
+}
 
 dialog {
     border-radius: 20px;

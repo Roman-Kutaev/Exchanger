@@ -24,8 +24,8 @@ public class CurrencyController {
 
     @GetMapping(path = "/{cc}")
     public ResponseEntity<Currency> currencyByCc(@PathVariable String cc) {
-        System.out.println("currency = " + currencyService.findCourseBiCC(cc));
-        return currencyService.findCourseBiCC(cc);
+        System.out.println("currency = " + currencyService.findCourseByCC(cc));
+        return currencyService.findCourseByCC(cc);
     }
 
 //    @GetMapping(path = "/{id}")
