@@ -28,7 +28,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8080/api/v1/exchanger/request/delete/38096111111
+DELETE http://localhost:8080/api/v1/exchanger/request/delete/+380968443448
 Accept: application/json
 Content-Type: application/json
 

@@ -88,16 +88,20 @@ public class RequestService {
     }
 
     public ResponseEntity<Request> changStatus(Request newRequest) {
-        Request request  = requestRepository.findById(newRequest.getId()).orElse(null);
-        assert request != null;
-        if (newRequest.getConfirmationCode() == request.getConfirmationCode()){
-            request.setStatus(STATUS_COMPLETED);
-            requestRepository.saveAndFlush(request);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            request.setStatus(STATUS_CANCELED);
-            requestRepository.saveAndFlush(request);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        try {
+            Request request = requestRepository.findById(newRequest.getId()).orElse(null);
+            assert request != null;
+            if (newRequest.getConfirmationCode() == request.getConfirmationCode()) {
+                request.setStatus(STATUS_COMPLETED);
+                requestRepository.saveAndFlush(request);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } else {
+                request.setStatus(STATUS_CANCELED);
+                requestRepository.saveAndFlush(request);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
         }
 
     }
