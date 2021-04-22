@@ -43,8 +43,8 @@ public class CurrencyService {
         }
         assert courseList != null;
         for (CourseBase course : courseList) {
-            BigDecimal currencySale = course.getRate().multiply(new BigDecimal("0.95")).setScale(2, RoundingMode.UP);
-            BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal("1.05")).setScale(2, RoundingMode.UP);
+            BigDecimal currencySale = course.getRate().multiply(new BigDecimal("1.05")).setScale(2, RoundingMode.UP);
+            BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal("0.95")).setScale(2, RoundingMode.UP);
             Currency currency = new Currency(course.getCc(), currencyPurchase, currencySale, course.getExchangedate());
             currencyRepository.save(currency);
         }
@@ -62,12 +62,12 @@ public class CurrencyService {
         }
     }
 
-    public ResponseEntity<Currency> findCourseById(int id) {
-        Currency currency = currencyRepository.findById(id).orElse(null);
-        if (currency != null) {
-            return ResponseEntity.ok(currency);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    public ResponseEntity<Currency> findCourseById(int id) {
+//        Currency currency = currencyRepository.findById(id).orElse(null);
+//        if (currency != null) {
+//            return ResponseEntity.ok(currency);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }

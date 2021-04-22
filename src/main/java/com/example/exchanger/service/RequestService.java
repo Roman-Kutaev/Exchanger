@@ -58,9 +58,9 @@ public class RequestService {
 
             Currency currency = currencyRepository.findCourseByCc(request.getCc());
             if (request.getAction().equals(ACTION_PURCHASE)) {
-                request.setSumPayment(currency.getPurchase().multiply(request.getSumCurrency()));
-            } else if (request.getAction().equals(ACTION_SALE)) {
                 request.setSumPayment(currency.getSale().multiply(request.getSumCurrency()));
+            } else if (request.getAction().equals(ACTION_SALE)) {
+                request.setSumPayment(currency.getPurchase().multiply(request.getSumCurrency()));
             } else {
                 throw new Throwable();
             }
@@ -69,7 +69,7 @@ public class RequestService {
             requestRepository.save(request);
             System.out.println("Save request = " + request);
 
-            System.out.println(request.getDate() + " Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
+            System.out.println("Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());
 //            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 //            Message message = Message.creator(
