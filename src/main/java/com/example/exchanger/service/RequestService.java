@@ -76,7 +76,7 @@ public class RequestService {
 //                    new PhoneNumber(request.getPhoneNumber()),
 //                    new PhoneNumber(TWILIO_NUMBER),
 //                    "Вы подали заявку на " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc() +
-//                            "\nСумма к оплате " + request.getSumCurrency() + " грн.\nВаш код подтверждения " + request.getConfirmationCode()).create();
+//                            "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode()).create();
 
             return ResponseEntity.status(HttpStatus.OK).body(new Request(request.getId(), request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment()));
         } catch (Throwable ex) {

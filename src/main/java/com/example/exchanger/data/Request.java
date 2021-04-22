@@ -33,7 +33,7 @@ public class Request {
     @NonNull
     @Column(name = "phone_number")
 
-    @Pattern(regexp = "^\\+[1-9]{1}[0-9]{3,14}$")
+    @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
     private String phoneNumber;
     private String status;
     @NonNull

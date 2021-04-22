@@ -5,21 +5,18 @@ th, td {
 }
 
 table, div {
-    width: 900px;
+    width: 870px;
     text-align: center;
-    border: 1px solid green;
+    border: 1px solid #025602;
     margin: auto;
+    background: rgba(101, 94, 103, 0.7);
 }
 caption{
     font-size: 25px;
 }
-/*body {*/
-/*    background: #8d8b92 url(img/54a99795ead1f.jpg); !* Цвет фона и путь к файлу *!*/
-/*    color: #fff; !* Цвет текста *!*/
-/*}*/
 body {
-    background-image: url(img/Euro.jpg); /* Путь к фоновому изображению */
-    background-color: #c7b39b; /* Цвет фона */
+    background: #878194 url(img/fon.jpg);
+    color: white;
 }
 
 dialog {
