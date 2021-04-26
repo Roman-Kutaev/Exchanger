@@ -51,13 +51,19 @@ public class RequestController {
         return requestService.changStatus(id, code);
     }
 
-    @DeleteMapping(path = "delete/{phone}")
-    public ResponseEntity<Request> deleteRequest(@PathVariable String phone) {
-        return requestService.deleteRequest(phone);
+    @DeleteMapping()
+    public ResponseEntity<Request> deleteRequest() {
+        return requestService.deleteAllBadRequest();
     }
 
+    @GetMapping(path = "/report/{status}")
+    public List<Request> allRequest(@PathVariable String status) {
+        return requestService.findAllRequest(status);
+    }
+
+
     @PreDestroy
-    @GetMapping(path = "report")
+    @GetMapping(path = "/report")
     public List<Report> createReport() {
         System.out.println("Report = " + requestService.createReport());
         return requestService.createReport();

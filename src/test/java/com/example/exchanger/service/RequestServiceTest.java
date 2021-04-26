@@ -76,39 +76,39 @@ class RequestServiceTest {
         assertEquals(404, result.getStatusCodeValue());
     }
 
-    @Test
-    void deleteRequestSuccess() {
-        String phone = "PHONE";
-        Request request = new Request();
-        request.setStatus(STATUS_NEW);
+//    @Test
+//    void deleteRequestSuccess() {
+//        String phone = "PHONE";
+//        Request request = new Request();
+//        request.setStatus(STATUS_NEW);
+//
+//        when(requestRepository.findByPhoneNumber(eq(phone))).thenReturn(request);
+//        ResponseEntity<Request> result = service.deleteRequest(phone);
+//
+//        verify(requestRepository, times(1)).delete(any(Request.class));
+//        assertEquals(200, result.getStatusCodeValue());
+//    }
 
-        when(requestRepository.findByPhoneNumber(eq(phone))).thenReturn(request);
-        ResponseEntity<Request> result = service.deleteRequest(phone);
+//    @Test
+//    void deleteRequestWrongStatus() {
+//
+//        String phone = "PHONE";
+//        Request request = new Request();
+//        request.setStatus(STATUS_COMPLETED);
+//
+//        when(requestRepository.findByPhoneNumber(eq(phone))).thenReturn(request);
+//        ResponseEntity<Request> result = service.deleteRequest(phone);
+//
+//        verify(requestRepository, never()).delete(any(Request.class));
+//        assertEquals(204, result.getStatusCodeValue());
+//    }
 
-        verify(requestRepository, times(1)).delete(any(Request.class));
-        assertEquals(200, result.getStatusCodeValue());
-    }
-
-    @Test
-    void deleteRequestWrongStatus() {
-
-        String phone = "PHONE";
-        Request request = new Request();
-        request.setStatus(STATUS_COMPLETED);
-
-        when(requestRepository.findByPhoneNumber(eq(phone))).thenReturn(request);
-        ResponseEntity<Request> result = service.deleteRequest(phone);
-
-        verify(requestRepository, never()).delete(any(Request.class));
-        assertEquals(204, result.getStatusCodeValue());
-    }
-
-    @Test
-    void deleteRequestNotFound() {
-        String phone = "PHONE";
-        ResponseEntity<Request> result = service.deleteRequest(phone);
-        assertEquals(404, result.getStatusCodeValue());
-    }
+//    @Test
+//    void deleteRequestNotFound() {
+//        String phone = "PHONE";
+//        ResponseEntity<Request> result = service.deleteRequest(phone);
+//        assertEquals(404, result.getStatusCodeValue());
+//    }
 
     @Test
     void createReport() {

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -32,6 +33,7 @@ public class CurrencyService {
         this.currencyRepository = repository;
     }
 
+    @Transactional
     public List<Currency> getAllCourse() {
         String jsonCourseArray = restTemplate.getForEntity(url, String.class).getBody();
         List<CourseBase> courseList = null;
@@ -41,6 +43,7 @@ public class CurrencyService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        currencyRepository.deleteAll();
         assert courseList != null;
         for (CourseBase course : courseList) {
             BigDecimal currencySale = course.getRate().multiply(new BigDecimal("1.05")).setScale(2, RoundingMode.UP);
@@ -51,7 +54,7 @@ public class CurrencyService {
         return currencyRepository.findAll();
     }
 
-
+    @Transactional
     public ResponseEntity<Currency> findCourseByCC(String cc) {
         Currency currency = currencyRepository.findCourseByCc(cc.toUpperCase());
         if (currency != null) {
@@ -62,12 +65,4 @@ public class CurrencyService {
         }
     }
 
-//    public ResponseEntity<Currency> findCourseById(int id) {
-//        Currency currency = currencyRepository.findById(id).orElse(null);
-//        if (currency != null) {
-//            return ResponseEntity.ok(currency);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
 }

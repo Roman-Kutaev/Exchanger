@@ -58,33 +58,67 @@ document.querySelector("#showReportByDay")
 
 document.querySelector("#deleteRequest")
     .addEventListener('click', evt => {
-        let phone = document.querySelector("#phoneNumber")
-        console.log('phone = ' + phone.value)
-        fetch(baseUrlRequest + "/delete/" + phone.value,
+        fetch(baseUrlRequest,
             {
                 method: 'DELETE',
                 headers:{
                     'Content-Type': 'application/json'
                 }
             } ).then(function (response) {
-                phone.value = '';
             if (response.status === 200) {
-               alert('Заявка удалена.')
+                alert('Заявки со статусом "Отменена" удалены.')
             }
-            else if (response.status === 204){
-                alert('Статус заявки не "Новая".')
-            } else{
-                alert('По данному номеру телефона заявку не найдено.')
+           else{
+                alert('Заявок не найдено')
             }
         })
     })
 
-const dialog = document.querySelector('dialog');
+const dialog = document.querySelector('#dialogReport');
 document.querySelector("#showReportByDay").onclick =
     document.querySelector("#showReport").onclick = function () {
         dialog.showModal();
     }
 
-document.querySelector("#close").onclick = function () {
+document.querySelector("#closeReport").onclick = function () {
     dialog.close();
+}
+
+document.querySelector("#showRequest").addEventListener('click', event => {
+   let status = document.querySelector('#status');
+
+    fetch(baseUrlReport + "/" + status.value, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+        .then(json => {
+            status.value = '';
+            showRequest(json);
+        });
+})
+
+function showRequest(listRequest) {
+    console.log('listRequest = ' + listRequest);
+    const tableBody = document.querySelector('#bodyListRequest');
+    tableBody.innerHTML='';
+    listRequest.forEach(request => {
+        let tr = document.createElement('tr');
+        for (const prop in request) {
+            let td = document.createElement('td');
+            td.append(document.createTextNode(request[prop]));
+            tr.append(td);
+        }
+        tableBody.append(tr);
+    });
+}
+
+const dialogRequest = document.querySelector('#dialogRequest');
+    document.querySelector("#showRequest").onclick = function () {
+        dialogRequest.showModal();
+    }
+
+document.querySelector("#closeRequest").onclick = function () {
+    dialogRequest.close();
 }

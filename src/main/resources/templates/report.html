@@ -8,7 +8,16 @@
 <body>
 <br>
 <div>
-    <p>Формирование отчетов</p>
+    <h3>Управление заявками</h3>
+    <p>Просмотреть заявки по определённому статусу</p>
+    <label for="status">Введите статус заявки: </label><input id="status">
+    <button id="showRequest">Выполнить</button>
+    <hr>
+    <p>Удалить все заявки со статусом "Отменена"</p>
+    <button id="deleteRequest">Выполнить</button>
+    <hr>
+    <hr>
+    <h3>Формирование отчетов</h3>
     <label for="startDate">Начальная дата </label><input id="startDate" type="date" name="calendar">
     <label for="endDate">Конечная дата </label><input id="endDate" type="date" name="calendar">
     <label for="currency">Тип Валюты </label><input id="currency" required="required">
@@ -16,25 +25,42 @@
         <button id="showReport">Сформировать отчет</button>
     </p>
     <hr>
-    <p>Удалить заявку по номеру телефона</p>
-    <label for="phoneNumber">Введите номер телефона: </label><input id="phoneNumber" name="phone">
-    <button id="deleteRequest">Выполнить</button>
-    <hr>
-    <p> Завершить работу приложения и сформировать отчет за день:</p>
+    <p>Завершить работу приложения и сформировать отчет за день:</p>
     <p><button id="showReportByDay">Выполнить</button></p>
     <hr>
     <a th:href="@{/}">Вернуться в пользовательское меню</a>
-    <a th:href="@{/h2-console}">h2 console</a>
 </div>
 <br>
-<dialog>
+<dialog id="dialogRequest">
+    <table>
+        <thead>
+        <tr>
+            <td>Номер</td>
+            <td>Валюта</td>
+            <td>Операция</td>
+            <td>Сумма</td>
+            <td>Телефон</td>
+            <td>Статус</td>
+            <td>Код</td>
+            <td>Сумма к оплате</td>
+            <td>Дата</td>
+        </tr>
+        </thead>
+        <tbody id="bodyListRequest">
+        </tbody>
+    </table>
+    <br>
+    <button id="closeRequest">закрыть окно</button>
+</dialog>
+<br>
+<dialog id="dialogReport">
     <table>
         <thead>
         <tr>
             <td>Количество заявок</td>
             <td>Сумма</td>
-            <td>Валюта</td>
             <td>Операция</td>
+            <td>Валюта</td>
             <td>Дата</td>
         </tr>
         </thead>
@@ -42,7 +68,7 @@
         </tbody>
     </table>
     <br>
-    <button id="close">закрыть окно</button>
+    <button id="closeReport">закрыть окно</button>
 </dialog>
 <script type="text/javascript" th:src="@{/js/report.js}"></script>
 </body>

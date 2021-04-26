@@ -8,16 +8,11 @@ import com.example.exchanger.repository.RequestRepository;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,6 +79,7 @@ public class RequestService {
         }
     }
 
+    @Transactional
     public ResponseEntity<Request> changStatus(int id, int code) {
             Request request = requestRepository.findById(id).orElse(null);
             if (request == null){
@@ -104,20 +100,6 @@ public class RequestService {
         }
 
 
-    public ResponseEntity<Request> deleteRequest(String phone){
-        try {
-            Request request = requestRepository.findByPhoneNumber(phone);
-            if (request.getStatus().equals(STATUS_NEW)){
-                requestRepository.delete(request);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            } else {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
-        } catch (Exception e){
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     public List<Report> createReport(){
         LocalDate date = LocalDateTime.now().toLocalDate();
         return requestRepository.getReportByDay(date);
@@ -128,6 +110,21 @@ public class RequestService {
         LocalDate endDate = LocalDate.parse(endDay);
         String ccFormat = cc.toUpperCase();
         return requestRepository.getReportByDayAdnCC(startDate, endDate, ccFormat);
+    }
+
+    public List<Request> findAllRequest(String status) {
+        return requestRepository.findAllByStatus(status);
+    }
+
+    @Transactional
+    public ResponseEntity<Request> deleteAllBadRequest(){
+        try {
+            requestRepository.deleteByStatus(STATUS_CANCELED);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 }
