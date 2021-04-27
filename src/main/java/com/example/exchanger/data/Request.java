@@ -21,18 +21,12 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String cc;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "currency_id", referencedColumnName = "id")
-//    private Currency currency;
-
     private String action;
     @Column(name = "sum_currency")
     @Range(min = 1)
     private BigDecimal sumCurrency;
     @NonNull
     @Column(name = "phone_number")
-
     @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
     private String phoneNumber;
     private String status;

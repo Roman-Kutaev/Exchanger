@@ -13,9 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class Currency {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "currency_id")
-    private int Id;
+    @Id
     @NonNull
     private String cc;
     @NonNull
