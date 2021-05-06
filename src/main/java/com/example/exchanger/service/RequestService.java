@@ -22,9 +22,9 @@ import java.util.Random;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final CurrencyRepository currencyRepository;
-    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
-    public static final String AUTH_TOKEN = "4855d6c20ed79932464b2b79eb22d748";
-    public static final String TWILIO_NUMBER = "+13343846722";
+//    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
+//    public static final String AUTH_TOKEN = "4855d6c20ed79932464b2b79eb22d748";
+//    public static final String TWILIO_NUMBER = "+13343846722";
     public static final String STATUS_NEW = "Новая";
     public static final String STATUS_COMPLETED = "Выполнена";
     public static final String STATUS_CANCELED = "Отменена";
@@ -66,7 +66,7 @@ public class RequestService {
 
             System.out.println("Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());
-            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+//            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 //            Message message = Message.creator(
 //                    new PhoneNumber(request.getPhoneNumber()),
 //                    new PhoneNumber(TWILIO_NUMBER),
