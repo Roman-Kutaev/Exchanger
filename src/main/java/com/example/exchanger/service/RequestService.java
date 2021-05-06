@@ -22,9 +22,9 @@ import java.util.Random;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final CurrencyRepository currencyRepository;
-//    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
-//    public static final String AUTH_TOKEN = "a61ced920a56505df18b276e193cddfc";
-//    public static final String TWILIO_NUMBER = "+13343846722";
+    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
+    public static final String AUTH_TOKEN = "4855d6c20ed79932464b2b79eb22d748";
+    public static final String TWILIO_NUMBER = "+13343846722";
     public static final String STATUS_NEW = "Новая";
     public static final String STATUS_COMPLETED = "Выполнена";
     public static final String STATUS_CANCELED = "Отменена";
@@ -42,7 +42,7 @@ public class RequestService {
     }
 
     @Transactional()
-    public ResponseEntity<?> saveRequest(Request request) {
+    public Request saveRequest(Request request) {
         try {
             Random random = new Random();
             int code = random.nextInt(RANDOM_RANGE);
@@ -66,46 +66,44 @@ public class RequestService {
 
             System.out.println("Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());
-//            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 //            Message message = Message.creator(
 //                    new PhoneNumber(request.getPhoneNumber()),
 //                    new PhoneNumber(TWILIO_NUMBER),
 //                    "Вы подали заявку на " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc() +
 //                            "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode()).create();
 
-            return ResponseEntity.status(HttpStatus.OK).body(new Request(request.getId(), request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment()));
+            return new Request(request.getId(), request.getPhoneNumber(), request.getConfirmationCode(), request.getSumPayment());
         } catch (Throwable ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getLocalizedMessage());
+            return null;
         }
     }
 
     @Transactional
-    public ResponseEntity<Request> changStatus(int id, int code) {
-            Request request = requestRepository.findById(id).orElse(null);
-            if (request == null){
-                return ResponseEntity.notFound().build();
-            }
-
-            if (code == request.getConfirmationCode()) {
-                request.setStatus(STATUS_COMPLETED);
-                requestRepository.saveAndFlush(request);
-                System.out.println("Service request = " + request);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            } else {
-                request.setStatus(STATUS_CANCELED);
-                requestRepository.saveAndFlush(request);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-
+    public Request changStatus(int id, int code) {
+        Request request = requestRepository.findById(id).orElse(null);
+        assert request != null;
+        if (code == request.getConfirmationCode()) {
+            request.setStatus(STATUS_COMPLETED);
+//                requestRepository.saveAndFlush(request);
+//                System.out.println("Service request = " + request);
+//                return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            request.setStatus(STATUS_CANCELED);
+//                requestRepository.saveAndFlush(request);
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        requestRepository.saveAndFlush(request);
+        return request;
+    }
 
 
-    public List<Report> createReport(){
+    public List<Report> createReport() {
         LocalDate date = LocalDateTime.now().toLocalDate();
         return requestRepository.getReportByDay(date);
     }
 
-    public List<Report> createCustomReport(String startDay, String endDay, String cc){
+    public List<Report> createCustomReport(String startDay, String endDay, String cc) {
         LocalDate startDate = LocalDate.parse(startDay);
         LocalDate endDate = LocalDate.parse(endDay);
         String ccFormat = cc.toUpperCase();
@@ -117,12 +115,12 @@ public class RequestService {
     }
 
     @Transactional
-    public ResponseEntity<Request> deleteAllBadRequest(){
+    public List<Request> deleteAllBadRequest() {
         try {
-            requestRepository.deleteByStatus(STATUS_CANCELED);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }catch (Exception e){
-            return ResponseEntity.notFound().build();
+          return requestRepository.deleteByStatus(STATUS_CANCELED);
+
+        } catch (Exception e) {
+            return null;
         }
 
     }

@@ -33,12 +33,12 @@ public class RequestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody Request request) {
-        try {
-            return requestService.saveRequest(request);
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Введены не корректные данные!", ex);
+        if (requestService.saveRequest(request) != null){
+            return ResponseEntity.status(HttpStatus.OK).body(requestService.saveRequest(request));
+        } else {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
     }
 
     @GetMapping()
@@ -48,12 +48,17 @@ public class RequestController {
 
     @GetMapping(path = "/{id}/{code}")
     public ResponseEntity<Request> changStatusRequest(@PathVariable int id, @PathVariable int code) {
-        return requestService.changStatus(id, code);
+        Request request = requestService.changStatus(id, code);
+        if (request.getStatus().equals(RequestService.STATUS_COMPLETED)){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping()
-    public ResponseEntity<Request> deleteRequest() {
-        return requestService.deleteAllBadRequest();
+    public ResponseEntity<List<Request>> deleteRequest() {
+        return ResponseEntity.status(HttpStatus.OK).body(requestService.deleteAllBadRequest());
     }
 
     @GetMapping(path = "/report/{status}")

@@ -23,20 +23,20 @@ class CurrencyServiceTest {
     @Mock
     private CurrencyRepository currencyRepository;
 
-    @Test
-    void findCourseByCCSuccess(){
-        String cc = "USD";
-        Currency currency = new Currency();
-        when(currencyRepository.findCourseByCc(eq(cc))).thenReturn(currency);
-        ResponseEntity<Currency> result = service.findCourseByCC(cc);
-
-        assertEquals(200, result.getStatusCodeValue());
-    }
-
-    @Test
-    void findCourseByCCNotFound(){
-        String cc = "";
-        ResponseEntity<Currency> result = service.findCourseByCC(cc);
-        assertEquals(404,result.getStatusCodeValue());
-    }
+//    @Test
+//    void findCourseByCCSuccess(){
+//        String cc = "USD";
+//        Currency currency = new Currency();
+//        when(currencyRepository.findCourseByCc(eq(cc))).thenReturn(currency);
+//        ResponseEntity<Currency> result = service.findCourseByCC(cc);
+//
+//        assertEquals(200, result.getStatusCodeValue());
+//    }
+//
+//    @Test
+//    void findCourseByCCNotFound(){
+//        String cc = "";
+//        ResponseEntity<Currency> result = service.findCourseByCC(cc);
+//        assertEquals(404,result.getStatusCodeValue());
+//    }
 }

@@ -55,14 +55,8 @@ public class CurrencyService {
     }
 
     @Transactional
-    public ResponseEntity<Currency> findCourseByCC(String cc) {
-        Currency currency = currencyRepository.findCourseByCc(cc.toUpperCase());
-        if (currency != null) {
-            System.out.println("Controller currency = " + currency);
-            return ResponseEntity.status(HttpStatus.OK).body(currency);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public Currency findCourseByCC(String cc) {
+        return currencyRepository.findCourseByCc(cc.toUpperCase());
     }
 
 }

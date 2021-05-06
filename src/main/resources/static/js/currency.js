@@ -1,9 +1,15 @@
 const baseUrl = "http://localhost:8080/api/v1/exchanger";
 
 fetch(baseUrl)
+    .then(function (response) {
+        if (response.status !== 200) {
+            return alert('Сервис временно не доступен.')
+        }
+        return Promise.resolve(response)
+    })
     .then(response => response.json())
     .then(json => {
-        displayRates(json);
+        displayRates(json)
     });
 
 function displayRates(currencyArr) {

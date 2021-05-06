@@ -89,7 +89,6 @@ $('div').on('click', '.save', function () {
     let code = form.getElementsByTagName('input')[0].value
     let id = document.querySelector('#buyId').value;
 
-    console.log('id + code = ' + id + ' / ' + code )
     fetch(baseUrlRequest + "/" + id + "/" + code, {
 
         method: 'GET',
