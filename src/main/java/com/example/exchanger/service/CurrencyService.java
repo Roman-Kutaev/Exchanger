@@ -1,14 +1,12 @@
 package com.example.exchanger.service;
 
-import com.example.exchanger.data.CourseBase;
-import com.example.exchanger.data.Currency;
+import com.example.exchanger.dto.CourseBase;
+import com.example.exchanger.entity.Currency;
 import com.example.exchanger.repository.CurrencyRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,7 +17,8 @@ import java.util.List;
 
 @Service
 public class CurrencyService {
-
+    private static final Double SALE_COEFFICIENT = 1.05;
+    private static final Double PURCHASE_COEFFICIENT = 0.95;
     private final CurrencyRepository currencyRepository;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -43,20 +42,21 @@ public class CurrencyService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        currencyRepository.deleteAll();
+
         assert courseList != null;
         for (CourseBase course : courseList) {
-            BigDecimal currencySale = course.getRate().multiply(new BigDecimal("1.05")).setScale(2, RoundingMode.UP);
-            BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal("0.95")).setScale(2, RoundingMode.UP);
+            BigDecimal currencySale = course.getRate().multiply(new BigDecimal(SALE_COEFFICIENT)).setScale(2, RoundingMode.UP);
+            BigDecimal currencyPurchase = course.getRate().multiply(new BigDecimal(PURCHASE_COEFFICIENT)).setScale(2, RoundingMode.UP);
             Currency currency = new Currency(course.getCc(), currencyPurchase, currencySale, course.getExchangedate());
+
             currencyRepository.save(currency);
         }
         return currencyRepository.findAll();
     }
 
     @Transactional
-    public Currency findCourseByCC(String cc) {
-        return currencyRepository.findCourseByCc(cc.toUpperCase());
+    public Currency findCourseById(String cc) {
+        return currencyRepository.findById(cc.toUpperCase()).orElse(null);
     }
 
 }

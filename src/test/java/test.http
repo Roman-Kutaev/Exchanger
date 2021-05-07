@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 ###
 
-GET http://localhost:8080/api/v1/exchanger/request/23/382
+GET http://localhost:8080/api/v1/exchanger/request/22/278
 Accept: application/json
 Content-Type: application/json
 

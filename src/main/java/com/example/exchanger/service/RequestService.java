@@ -1,15 +1,11 @@
 package com.example.exchanger.service;
 
-import com.example.exchanger.data.Currency;
-import com.example.exchanger.data.Request;
+import com.example.exchanger.entity.Currency;
+import com.example.exchanger.entity.Request;
 import com.example.exchanger.dto.Report;
+import com.example.exchanger.dto.RequestDto;
 import com.example.exchanger.repository.CurrencyRepository;
 import com.example.exchanger.repository.RequestRepository;
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -42,27 +38,32 @@ public class RequestService {
     }
 
     @Transactional()
-    public Request saveRequest(Request request) {
+    public Request saveRequest(RequestDto requestDto) {
         try {
+//            Request request = requestDto.toEntity();
+
             Random random = new Random();
             int code = random.nextInt(RANDOM_RANGE);
 
-            request.setConfirmationCode(code);
+            requestDto.setConfirmationCode(code);
 
-            request.setStatus(STATUS_NEW);
+            requestDto.setStatus(STATUS_NEW);
 
-            Currency currency = currencyRepository.findCourseByCc(request.getCc());
-            if (request.getAction().equals(ACTION_PURCHASE)) {
-                request.setSumPayment(currency.getSale().multiply(request.getSumCurrency()));
-            } else if (request.getAction().equals(ACTION_SALE)) {
-                request.setSumPayment(currency.getPurchase().multiply(request.getSumCurrency()));
+            Currency currency = currencyRepository.findById(requestDto.getCc()).orElse(null);
+            assert currency != null;
+            if (requestDto.getAction().equals(ACTION_PURCHASE)) {
+                requestDto.setSumPayment(currency.getSale().multiply(requestDto.getSumCurrency()));
+            } else if (requestDto.getAction().equals(ACTION_SALE)) {
+                requestDto.setSumPayment(currency.getPurchase().multiply(requestDto.getSumCurrency()));
             } else {
                 throw new Throwable();
             }
-            request.setDate(LocalDateTime.now().toLocalDate());
+            requestDto.setDate(LocalDateTime.now().toLocalDate());
+
+            Request request = requestDto.toEntity();
 
             requestRepository.save(request);
-            System.out.println("Save request = " + request);
+            System.out.println("Service save request = " + request);
 
             System.out.println("Вы подали заявку: " + request.getAction() + " " + request.getSumCurrency() + " " + request.getCc()
                     + "\nСумма к оплате " + request.getSumPayment() + " грн.\nВаш код подтверждения " + request.getConfirmationCode());

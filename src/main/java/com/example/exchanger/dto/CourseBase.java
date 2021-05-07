@@ -1,4 +1,4 @@
-package com.example.exchanger.data;
+package com.example.exchanger.dto;
 
 import lombok.*;
 
@@ -11,11 +11,10 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-@AllArgsConstructor
-@Entity
+//@AllArgsConstructor
 public class CourseBase {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+//    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int Id;
 
     @NonNull
     private Integer r030;

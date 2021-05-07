@@ -1,19 +1,15 @@
 package com.example.exchanger.api.controller;
 
-import com.example.exchanger.data.Request;
+import com.example.exchanger.entity.Request;
 import com.example.exchanger.dto.Report;
+import com.example.exchanger.dto.RequestDto;
 import com.example.exchanger.service.RequestService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PreDestroy;
 import java.util.List;
@@ -32,12 +28,8 @@ public class RequestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@RequestBody Request request) {
-        if (requestService.saveRequest(request) != null){
-            return ResponseEntity.status(HttpStatus.OK).body(requestService.saveRequest(request));
-        } else {
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public ResponseEntity<?> create(@RequestBody RequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(requestService.saveRequest(requestDto));
 
     }
 
@@ -49,7 +41,7 @@ public class RequestController {
     @GetMapping(path = "/{id}/{code}")
     public ResponseEntity<Request> changStatusRequest(@PathVariable int id, @PathVariable int code) {
         Request request = requestService.changStatus(id, code);
-        if (request.getStatus().equals(RequestService.STATUS_COMPLETED)){
+        if (request.getStatus().equals(RequestService.STATUS_COMPLETED)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

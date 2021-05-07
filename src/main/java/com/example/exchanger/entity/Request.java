@@ -1,4 +1,4 @@
-package com.example.exchanger.data;
+package com.example.exchanger.entity;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Range;

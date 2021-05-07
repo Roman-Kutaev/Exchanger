@@ -1,20 +1,17 @@
 package com.example.exchanger.service;
 
-import com.example.exchanger.data.Request;
+import com.example.exchanger.entity.Request;
 import com.example.exchanger.repository.RequestRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.example.exchanger.service.RequestService.STATUS_COMPLETED;
-import static com.example.exchanger.service.RequestService.STATUS_NEW;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

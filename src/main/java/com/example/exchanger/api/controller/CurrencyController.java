@@ -1,6 +1,6 @@
 package com.example.exchanger.api.controller;
 
-import com.example.exchanger.data.Currency;
+import com.example.exchanger.entity.Currency;
 import com.example.exchanger.service.CurrencyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class CurrencyController {
 
     @GetMapping(path = "/{cc}")
     public ResponseEntity<Currency> currencyByCc(@PathVariable String cc) {
-        Currency currency = currencyService.findCourseByCC(cc);
+        Currency currency = currencyService.findCourseById(cc);
         if (currency != null){
             return ResponseEntity.status(HttpStatus.OK).body(currency);
         }else {
@@ -41,8 +41,4 @@ public class CurrencyController {
 
     }
 
-//    @GetMapping(path = "/{id}")
-//    public ResponseEntity<Course> courseById(@PathVariable int id) {
-//       return courseService.findCourseById(id);
-//    }
 }

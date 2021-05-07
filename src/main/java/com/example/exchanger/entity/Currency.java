@@ -1,4 +1,4 @@
-package com.example.exchanger.data;
+package com.example.exchanger.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

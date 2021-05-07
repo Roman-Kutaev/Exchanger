@@ -1,6 +1,6 @@
 package com.example.exchanger.repository;
 
-import com.example.exchanger.data.Request;
+import com.example.exchanger.entity.Request;
 import com.example.exchanger.dto.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
