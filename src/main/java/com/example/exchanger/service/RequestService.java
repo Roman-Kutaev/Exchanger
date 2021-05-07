@@ -18,7 +18,7 @@ import java.util.Random;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final CurrencyRepository currencyRepository;
-//    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
+    //    public static final String ACCOUNT_SID = "AC8f4c490f382770a6ef660050c391d95b";
 //    public static final String AUTH_TOKEN = "4855d6c20ed79932464b2b79eb22d748";
 //    public static final String TWILIO_NUMBER = "+13343846722";
     public static final String STATUS_NEW = "Новая";
@@ -40,8 +40,6 @@ public class RequestService {
     @Transactional()
     public Request saveRequest(RequestDto requestDto) {
         try {
-//            Request request = requestDto.toEntity();
-
             Random random = new Random();
             int code = random.nextInt(RANDOM_RANGE);
 
@@ -80,21 +78,17 @@ public class RequestService {
         }
     }
 
-    @Transactional
-    public Request changStatus(int id, int code) {
-        Request request = requestRepository.findById(id).orElse(null);
+    public Request changStatus(RequestDto requestDto) {
+        Request request = requestRepository.findById(requestDto.getId()).orElse(null);
+
         assert request != null;
-        if (code == request.getConfirmationCode()) {
+        if (requestDto.getConfirmationCode() == request.getConfirmationCode()) {
             request.setStatus(STATUS_COMPLETED);
-//                requestRepository.saveAndFlush(request);
-//                System.out.println("Service request = " + request);
-//                return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             request.setStatus(STATUS_CANCELED);
-//                requestRepository.saveAndFlush(request);
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         requestRepository.saveAndFlush(request);
+        System.out.println("Service request = " + request);
         return request;
     }
 
@@ -118,7 +112,7 @@ public class RequestService {
     @Transactional
     public List<Request> deleteAllBadRequest() {
         try {
-          return requestRepository.deleteByStatus(STATUS_CANCELED);
+            return requestRepository.deleteByStatus(STATUS_CANCELED);
 
         } catch (Exception e) {
             return null;

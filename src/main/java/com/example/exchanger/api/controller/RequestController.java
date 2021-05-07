@@ -38,13 +38,13 @@ public class RequestController {
         return requestService.findAllRequest();
     }
 
-    @GetMapping(path = "/{id}/{code}")
-    public ResponseEntity<Request> changStatusRequest(@PathVariable int id, @PathVariable int code) {
-        Request request = requestService.changStatus(id, code);
+    @PutMapping()
+    public ResponseEntity<Request> changStatusRequest(@RequestBody RequestDto requestDto) {
+        Request request = requestService.changStatus(requestDto);
         if (request.getStatus().equals(RequestService.STATUS_COMPLETED)) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body(requestService.changStatus(requestDto));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(requestService.changStatus(requestDto));
         }
     }
 

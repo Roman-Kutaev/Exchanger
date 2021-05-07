@@ -19,11 +19,9 @@ function displayRates(currencyArr) {
     currencyArr.forEach(currency => {
         let tr = document.createElement('tr');
         for (const prop in currency) {
-            if (prop !== 'id') {
                 let td = document.createElement('td');
                 td.append(document.createTextNode(currency[prop]));
                 tr.append(td);
-            }
         }
         tr.append(addButtonExchange(currency.cc));
         tbody.append(tr);

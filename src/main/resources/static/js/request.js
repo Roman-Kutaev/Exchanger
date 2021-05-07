@@ -1,5 +1,3 @@
-// Отображение заявки
-
 $('tbody').on('click', '.buy', function () {
     let cc = $(this).attr("rateCc");
     console.log(cc);
@@ -42,7 +40,8 @@ document.querySelector("#calculate")
             return Promise.resolve(response)
         }).then(response => response.json())
             .then(json => {
-                ccValue.value = sumValue.value = phoneNumberValue.value = '';
+                actionValue.disabled=sumValue.disabled=phoneNumberValue.disabled = true
+                document.getElementById("calculateForm").hidden = true;
                 document.getElementById("requestSave").hidden = false;
                 displayRequest(json);
             })
@@ -57,6 +56,8 @@ function displayRequest(request) {
     const form = document.querySelector('#requestSave');
     form.innerHTML = '';
     let div = document.createElement('div');
+    let h3 = document.createElement('h3');
+    h3.append(document.createTextNode("Подтверждение заявки"))
     for (const prop in request) {
         if (prop === 'sumPayment') {
             let p = document.createElement('p');
@@ -81,20 +82,33 @@ function displayRequest(request) {
     const text = document.createTextNode("Подтвердить заявку");
     buttonElement.append(text);
     div.append(label, input, buttonElement);
-    form.append(div);
+    form.append(h3,div);
 }
 
 $('div').on('click', '.save', function () {
     const form = document.querySelector('#requestSave');
     let code = form.getElementsByTagName('input')[0].value
+    console.log(code)
     let id = document.querySelector('#buyId').value;
-
-    fetch(baseUrlRequest + "/" + id + "/" + code, {
-
-        method: 'GET',
+    let ccValue = document.querySelector('#buyCc');
+    let actionValue = document.querySelector('#act');
+    let sumValue = document.querySelector('#sumBuy');
+    let phoneNumberValue = document.querySelector('#phone');
+    const request = {
+        id: id,
+        confirmationCode: code,
+        cc: ccValue.value,
+        action: actionValue.value,
+        sumCurrency: sumValue.value,
+        phoneNumber: phoneNumberValue.value
+    };
+    console.log(request)
+    fetch(baseUrlRequest, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(request)
     }).then(function (response) {
         if (response.status !== 200) {
             return Promise.reject(new Error())

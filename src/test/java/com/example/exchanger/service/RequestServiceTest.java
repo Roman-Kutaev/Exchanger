@@ -36,19 +36,19 @@ class RequestServiceTest {
     void saveRequest() {
     }
 
-    @Test
-    void changStatusSuccess() {
-        int id = 0;
-        int code = 123;
-        Request request = new Request();
-        request.setConfirmationCode(123);
-
-        when(requestRepository.findById(eq(id))).thenReturn(Optional.of(request));
-        service.changStatus(id, code);
-
-        verify(requestRepository, times(1)).saveAndFlush(any(Request.class));
-        assertEquals(request, service.changStatus(id, code));
-    }
+//    @Test
+//    void changStatusSuccess() {
+//        int id = 0;
+//        int code = 123;
+//        Request request = new Request();
+//        request.setConfirmationCode(123);
+//
+//        when(requestRepository.findById(eq(id))).thenReturn(Optional.of(request));
+//        service.changStatus(id, code);
+//
+//        verify(requestRepository, times(1)).saveAndFlush(any(Request.class));
+//        assertEquals(request, service.changStatus(id, code));
+//    }
 
 //    @Test
 //    void changStatusSuccess() {

@@ -14,23 +14,18 @@ Content-Type: application/json
   "phoneNumber": "+380968443447"
 }
 ###
-
-GET http://localhost:8080/api/v1/exchanger/request/22/278
+PUT http://localhost:8080/api/v1/exchanger/request
 Accept: application/json
 Content-Type: application/json
 
-###
-
-POST http://localhost:8080/api/v1/exchanger/request/shutDownContext
-Accept: application/json
-Content-Type: application/json
-
-###
-
-DELETE http://localhost:8080/api/v1/exchanger/request
-Accept: application/json
-Content-Type: application/json
-
+{
+  "id": 22,
+  "cc": "USD",
+  "action": "Продажа",
+  "sumCurrency": 100,
+  "phoneNumber": "+380968443447",
+  "confirmationCode": 104
+}
 ###
 
 GET http://localhost:8080/api/v1/exchanger/request/report/Отменена
@@ -38,6 +33,12 @@ Accept: application/json
 Content-Type: application/json
 
 ###
+DELETE http://localhost:8080/api/v1/exchanger/request
+Accept: application/json
+Content-Type: application/json
+
+###
+
 
 GET http://localhost:8080/api/v1/exchanger/request/report
 Accept: application/json
@@ -45,8 +46,13 @@ Content-Type: application/json
 
 ###
 
-
 GET http://localhost:8080/api/v1/exchanger/request/report/2021-04-02/2021-04-14/USD
+Accept: application/json
+Content-Type: application/json
+
+###
+
+POST http://localhost:8080/api/v1/exchanger/request/shutDownContext
 Accept: application/json
 Content-Type: application/json
 

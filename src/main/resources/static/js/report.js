@@ -13,7 +13,7 @@ document.querySelector("#showReport").addEventListener('click', event => {
         }
     }).then(response => response.json())
         .then(json => {
-            startDate.value = endDate.value = currency.value = '';
+            startDate = endDate = currency = 'disabled';
             show(json);
         });
 })
